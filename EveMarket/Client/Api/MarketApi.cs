@@ -29,7 +29,7 @@ namespace IO.Swagger.Api
         /// <param name="page">Which page of results to return</param>
         /// <param name="token">Access token to use if unable to set a header</param>
         /// <returns>List&lt;GetCharactersCharacterIdOrdersHistory200Ok&gt;</returns>
-        List<GetCharactersCharacterIdOrdersHistory200Ok> GetCharactersCharacterIdOrdersHistory (int? characterId, string datasource, string ifNoneMatch, int? page, string token);
+        List<GetCharactersCharacterIdOrdersHistory200Ok> GetCharactersCharacterIdOrdersHistory (int? characterId, string token, string datasource = "tranquility", string ifNoneMatch = null, int? page = null);
         /// <summary>
         /// List open orders from a corporation List open market orders placed on behalf of a corporation  - --  This route is cached for up to 1200 seconds  - -- Requires one of the following EVE corporation role(s): Accountant, Trader
         /// </summary>
@@ -220,7 +220,7 @@ namespace IO.Swagger.Api
         /// <param name="page">Which page of results to return</param> 
         /// <param name="token">Access token to use if unable to set a header</param> 
         /// <returns>List&lt;GetCharactersCharacterIdOrdersHistory200Ok&gt;</returns>            
-        public List<GetCharactersCharacterIdOrdersHistory200Ok> GetCharactersCharacterIdOrdersHistory (int? characterId, string datasource, string ifNoneMatch, int? page, string token)
+        public List<GetCharactersCharacterIdOrdersHistory200Ok> GetCharactersCharacterIdOrdersHistory (int? characterId, string token, string datasource = "tranquility", string ifNoneMatch = null, int? page = null)
         {
             
             // verify the required parameter 'characterId' is set
@@ -646,6 +646,5 @@ namespace IO.Swagger.Api
     
             return (List<GetMarketsStructuresStructureId200Ok>) ApiClient.Deserialize(response.Content, typeof(List<GetMarketsStructuresStructureId200Ok>), response.Headers);
         }
-    
     }
 }
