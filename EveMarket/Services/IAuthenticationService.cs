@@ -6,5 +6,6 @@ namespace EveMarket.Services
     {
         Task LogIn();
         Task LogIn(string code);
+        bool CheckCookie();
     }
 }

@@ -1,0 +1,459 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BD057BB2-8B40-4A4B-A313-F0B39C8A6029}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EveClientStandard</RootNamespace>
+    <AssemblyName>EveClientStandard</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JsonSubTypes, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JsonSubTypes.1.5.1\lib\net46\JsonSubTypes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.1.0\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Api\AllianceApi.cs" />
+    <Compile Include="Api\AssetsApi.cs" />
+    <Compile Include="Api\BookmarksApi.cs" />
+    <Compile Include="Api\CalendarApi.cs" />
+    <Compile Include="Api\CharacterApi.cs" />
+    <Compile Include="Api\ClonesApi.cs" />
+    <Compile Include="Api\ContactsApi.cs" />
+    <Compile Include="Api\ContractsApi.cs" />
+    <Compile Include="Api\CorporationApi.cs" />
+    <Compile Include="Api\DogmaApi.cs" />
+    <Compile Include="Api\FactionWarfareApi.cs" />
+    <Compile Include="Api\FittingsApi.cs" />
+    <Compile Include="Api\FleetsApi.cs" />
+    <Compile Include="Api\IncursionsApi.cs" />
+    <Compile Include="Api\IndustryApi.cs" />
+    <Compile Include="Api\InsuranceApi.cs" />
+    <Compile Include="Api\KillmailsApi.cs" />
+    <Compile Include="Api\LocationApi.cs" />
+    <Compile Include="Api\LoyaltyApi.cs" />
+    <Compile Include="Api\MailApi.cs" />
+    <Compile Include="Api\MarketApi.cs" />
+    <Compile Include="Api\OpportunitiesApi.cs" />
+    <Compile Include="Api\PlanetaryInteractionApi.cs" />
+    <Compile Include="Api\RoutesApi.cs" />
+    <Compile Include="Api\SearchApi.cs" />
+    <Compile Include="Api\SkillsApi.cs" />
+    <Compile Include="Api\SovereigntyApi.cs" />
+    <Compile Include="Api\StatusApi.cs" />
+    <Compile Include="Api\UniverseApi.cs" />
+    <Compile Include="Api\UserInterfaceApi.cs" />
+    <Compile Include="Api\WalletApi.cs" />
+    <Compile Include="Api\WarsApi.cs" />
+    <Compile Include="Client\ApiClient.cs" />
+    <Compile Include="Client\ApiException.cs" />
+    <Compile Include="Client\ApiResponse.cs" />
+    <Compile Include="Client\Configuration.cs" />
+    <Compile Include="Client\ExceptionFactory.cs" />
+    <Compile Include="Client\GlobalConfiguration.cs" />
+    <Compile Include="Client\IApiAccessor.cs" />
+    <Compile Include="Client\IReadableConfiguration.cs" />
+    <Compile Include="Client\SwaggerDateConverter.cs" />
+    <Compile Include="Model\BadRequest.cs" />
+    <Compile Include="Model\DeleteCharactersCharacterIdMailLabelsLabelIdUnprocessableEntity.cs" />
+    <Compile Include="Model\DeleteFleetsFleetIdMembersMemberIdNotFound.cs" />
+    <Compile Include="Model\DeleteFleetsFleetIdSquadsSquadIdNotFound.cs" />
+    <Compile Include="Model\DeleteFleetsFleetIdWingsWingIdNotFound.cs" />
+    <Compile Include="Model\ErrorLimited.cs" />
+    <Compile Include="Model\Forbidden.cs" />
+    <Compile Include="Model\GatewayTimeout.cs" />
+    <Compile Include="Model\GetAlliancesAllianceIdContacts200Ok.cs" />
+    <Compile Include="Model\GetAlliancesAllianceIdContactsLabels200Ok.cs" />
+    <Compile Include="Model\GetAlliancesAllianceIdIconsNotFound.cs" />
+    <Compile Include="Model\GetAlliancesAllianceIdIconsOk.cs" />
+    <Compile Include="Model\GetAlliancesAllianceIdNotFound.cs" />
+    <Compile Include="Model\GetAlliancesAllianceIdOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdAgentsResearch200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdAssets200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdAttributesOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdBlueprints200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdBookmarks200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdBookmarksCoordinates.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdBookmarksFolders200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdBookmarksItem.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdCalendar200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdCalendarEventIdAttendees200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdCalendarEventIdAttendeesNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdCalendarEventIdNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdCalendarEventIdOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdClonesHomeLocation.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdClonesJumpClone.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdClonesOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdContacts200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdContactsLabels200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdContracts200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdContractsContractIdBids200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdContractsContractIdBidsNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdContractsContractIdItems200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdContractsContractIdItemsNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdCorporationhistory200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFatigueOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFittings200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFittingsItem.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFleetNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFleetOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFwStatsKills.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFwStatsOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdFwStatsVictoryPoints.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdIndustryJobs200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdKillmailsRecent200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdLocationOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdLoyaltyPoints200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMail200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMailLabelsLabel.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMailLabelsOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMailLists200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMailMailIdNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMailMailIdOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMailMailIdRecipient.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMailRecipient.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMedals200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMedalsGraphic.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdMining200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdNotifications200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdNotificationsContacts200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdOnlineOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdOpportunities200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdOrders200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdOrdersHistory200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanets200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdContent.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdExtractorDetails.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdFactoryDetails.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdHead.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdLink.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdPin.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPlanetsPlanetIdRoute.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPortraitNotFound.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdPortraitOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdRolesOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdSearchOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdShipOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdSkillqueue200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdSkillsOk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdSkillsSkill.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStandings200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStats200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsCharacter.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsCombat.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsIndustry.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsInventory.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsIsk.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsMarket.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsMining.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsModule.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsOrbital.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsPve.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsSocial.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdStatsTravel.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdTitles200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdWalletJournal200Ok.cs" />
+    <Compile Include="Model\GetCharactersCharacterIdWalletTransactions200Ok.cs" />
+    <Compile Include="Model\GetContractsPublicBidsContractId200Ok.cs" />
+    <Compile Include="Model\GetContractsPublicBidsContractIdForbidden.cs" />
+    <Compile Include="Model\GetContractsPublicBidsContractIdNotFound.cs" />
+    <Compile Include="Model\GetContractsPublicItemsContractId200Ok.cs" />
+    <Compile Include="Model\GetContractsPublicItemsContractIdForbidden.cs" />
+    <Compile Include="Model\GetContractsPublicItemsContractIdNotFound.cs" />
+    <Compile Include="Model\GetContractsPublicRegionId200Ok.cs" />
+    <Compile Include="Model\GetContractsPublicRegionIdNotFound.cs" />
+    <Compile Include="Model\GetCorporationCorporationIdMiningExtractions200Ok.cs" />
+    <Compile Include="Model\GetCorporationCorporationIdMiningObservers200Ok.cs" />
+    <Compile Include="Model\GetCorporationCorporationIdMiningObserversObserverId200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdAlliancehistory200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdAssets200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdBlueprints200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdBookmarks200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdBookmarksCoordinates.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdBookmarksFolders200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdBookmarksItem.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContacts200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContactsLabels200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContainersLogs200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContracts200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContractsContractIdBids200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContractsContractIdBidsNotFound.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContractsContractIdItems200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContractsContractIdItemsError520.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdContractsContractIdItemsNotFound.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdCustomsOffices200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdDivisionsHangarHangar.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdDivisionsOk.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdDivisionsWalletWallet.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdFacilities200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdFwStatsKills.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdFwStatsOk.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdFwStatsVictoryPoints.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdIconsNotFound.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdIconsOk.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdIndustryJobs200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdKillmailsRecent200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdMedals200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdMedalsIssued200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdMembersTitles200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdMembertracking200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdNotFound.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdOk.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdOrders200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdOrdersHistory200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdRoles200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdRolesHistory200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdShareholders200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdStandings200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdStarbases200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdStarbasesStarbaseIdFuel.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdStarbasesStarbaseIdOk.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdStructures200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdStructuresService.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdTitles200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdWallets200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdWalletsDivisionJournal200Ok.cs" />
+    <Compile Include="Model\GetCorporationsCorporationIdWalletsDivisionTransactions200Ok.cs" />
+    <Compile Include="Model\GetDogmaAttributesAttributeIdNotFound.cs" />
+    <Compile Include="Model\GetDogmaAttributesAttributeIdOk.cs" />
+    <Compile Include="Model\GetDogmaDynamicItemsTypeIdItemIdDogmaAttribute.cs" />
+    <Compile Include="Model\GetDogmaDynamicItemsTypeIdItemIdDogmaEffect.cs" />
+    <Compile Include="Model\GetDogmaDynamicItemsTypeIdItemIdNotFound.cs" />
+    <Compile Include="Model\GetDogmaDynamicItemsTypeIdItemIdOk.cs" />
+    <Compile Include="Model\GetDogmaEffectsEffectIdModifier.cs" />
+    <Compile Include="Model\GetDogmaEffectsEffectIdNotFound.cs" />
+    <Compile Include="Model\GetDogmaEffectsEffectIdOk.cs" />
+    <Compile Include="Model\GetFleetsFleetIdMembers200Ok.cs" />
+    <Compile Include="Model\GetFleetsFleetIdMembersNotFound.cs" />
+    <Compile Include="Model\GetFleetsFleetIdNotFound.cs" />
+    <Compile Include="Model\GetFleetsFleetIdOk.cs" />
+    <Compile Include="Model\GetFleetsFleetIdWings200Ok.cs" />
+    <Compile Include="Model\GetFleetsFleetIdWingsNotFound.cs" />
+    <Compile Include="Model\GetFleetsFleetIdWingsSquad.cs" />
+    <Compile Include="Model\GetFwLeaderboardsActiveTotalActiveTotal.cs" />
+    <Compile Include="Model\GetFwLeaderboardsActiveTotalActiveTotal1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersActiveTotalActiveTotal.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersActiveTotalActiveTotal1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersKills.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersLastWeekLastWeek.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersLastWeekLastWeek1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersOk.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersVictoryPoints.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersYesterdayYesterday.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCharactersYesterdayYesterday1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsActiveTotalActiveTotal.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsActiveTotalActiveTotal1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsKills.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsLastWeekLastWeek.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsLastWeekLastWeek1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsOk.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsVictoryPoints.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsYesterdayYesterday.cs" />
+    <Compile Include="Model\GetFwLeaderboardsCorporationsYesterdayYesterday1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsKills.cs" />
+    <Compile Include="Model\GetFwLeaderboardsLastWeekLastWeek.cs" />
+    <Compile Include="Model\GetFwLeaderboardsLastWeekLastWeek1.cs" />
+    <Compile Include="Model\GetFwLeaderboardsOk.cs" />
+    <Compile Include="Model\GetFwLeaderboardsVictoryPoints.cs" />
+    <Compile Include="Model\GetFwLeaderboardsYesterdayYesterday.cs" />
+    <Compile Include="Model\GetFwLeaderboardsYesterdayYesterday1.cs" />
+    <Compile Include="Model\GetFwStats200Ok.cs" />
+    <Compile Include="Model\GetFwStatsKills.cs" />
+    <Compile Include="Model\GetFwStatsVictoryPoints.cs" />
+    <Compile Include="Model\GetFwSystems200Ok.cs" />
+    <Compile Include="Model\GetFwWars200Ok.cs" />
+    <Compile Include="Model\GetIncursions200Ok.cs" />
+    <Compile Include="Model\GetIndustryFacilities200Ok.cs" />
+    <Compile Include="Model\GetIndustrySystems200Ok.cs" />
+    <Compile Include="Model\GetIndustrySystemsCostIndice.cs" />
+    <Compile Include="Model\GetInsurancePrices200Ok.cs" />
+    <Compile Include="Model\GetInsurancePricesLevel.cs" />
+    <Compile Include="Model\GetKillmailsKillmailIdKillmailHashAttacker.cs" />
+    <Compile Include="Model\GetKillmailsKillmailIdKillmailHashItem.cs" />
+    <Compile Include="Model\GetKillmailsKillmailIdKillmailHashItemsItem.cs" />
+    <Compile Include="Model\GetKillmailsKillmailIdKillmailHashOk.cs" />
+    <Compile Include="Model\GetKillmailsKillmailIdKillmailHashPosition.cs" />
+    <Compile Include="Model\GetKillmailsKillmailIdKillmailHashUnprocessableEntity.cs" />
+    <Compile Include="Model\GetKillmailsKillmailIdKillmailHashVictim.cs" />
+    <Compile Include="Model\GetLoyaltyStoresCorporationIdOffers200Ok.cs" />
+    <Compile Include="Model\GetLoyaltyStoresCorporationIdOffersNotFound.cs" />
+    <Compile Include="Model\GetLoyaltyStoresCorporationIdOffersRequiredItem.cs" />
+    <Compile Include="Model\GetMarketsGroupsMarketGroupIdNotFound.cs" />
+    <Compile Include="Model\GetMarketsGroupsMarketGroupIdOk.cs" />
+    <Compile Include="Model\GetMarketsPrices200Ok.cs" />
+    <Compile Include="Model\GetMarketsRegionIdHistory200Ok.cs" />
+    <Compile Include="Model\GetMarketsRegionIdHistoryError520.cs" />
+    <Compile Include="Model\GetMarketsRegionIdHistoryNotFound.cs" />
+    <Compile Include="Model\GetMarketsRegionIdHistoryUnprocessableEntity.cs" />
+    <Compile Include="Model\GetMarketsRegionIdOrders200Ok.cs" />
+    <Compile Include="Model\GetMarketsRegionIdOrdersNotFound.cs" />
+    <Compile Include="Model\GetMarketsRegionIdOrdersUnprocessableEntity.cs" />
+    <Compile Include="Model\GetMarketsStructuresStructureId200Ok.cs" />
+    <Compile Include="Model\GetOpportunitiesGroupsGroupIdOk.cs" />
+    <Compile Include="Model\GetOpportunitiesTasksTaskIdOk.cs" />
+    <Compile Include="Model\GetRouteOriginDestinationNotFound.cs" />
+    <Compile Include="Model\GetSearchOk.cs" />
+    <Compile Include="Model\GetSovereigntyCampaigns200Ok.cs" />
+    <Compile Include="Model\GetSovereigntyCampaignsParticipant.cs" />
+    <Compile Include="Model\GetSovereigntyMap200Ok.cs" />
+    <Compile Include="Model\GetSovereigntyStructures200Ok.cs" />
+    <Compile Include="Model\GetStatusOk.cs" />
+    <Compile Include="Model\GetUniverseAncestries200Ok.cs" />
+    <Compile Include="Model\GetUniverseAsteroidBeltsAsteroidBeltIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseAsteroidBeltsAsteroidBeltIdOk.cs" />
+    <Compile Include="Model\GetUniverseAsteroidBeltsAsteroidBeltIdPosition.cs" />
+    <Compile Include="Model\GetUniverseBloodlines200Ok.cs" />
+    <Compile Include="Model\GetUniverseCategoriesCategoryIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseCategoriesCategoryIdOk.cs" />
+    <Compile Include="Model\GetUniverseConstellationsConstellationIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseConstellationsConstellationIdOk.cs" />
+    <Compile Include="Model\GetUniverseConstellationsConstellationIdPosition.cs" />
+    <Compile Include="Model\GetUniverseFactions200Ok.cs" />
+    <Compile Include="Model\GetUniverseGraphicsGraphicIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseGraphicsGraphicIdOk.cs" />
+    <Compile Include="Model\GetUniverseGroupsGroupIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseGroupsGroupIdOk.cs" />
+    <Compile Include="Model\GetUniverseMoonsMoonIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseMoonsMoonIdOk.cs" />
+    <Compile Include="Model\GetUniverseMoonsMoonIdPosition.cs" />
+    <Compile Include="Model\GetUniversePlanetsPlanetIdNotFound.cs" />
+    <Compile Include="Model\GetUniversePlanetsPlanetIdOk.cs" />
+    <Compile Include="Model\GetUniversePlanetsPlanetIdPosition.cs" />
+    <Compile Include="Model\GetUniverseRaces200Ok.cs" />
+    <Compile Include="Model\GetUniverseRegionsRegionIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseRegionsRegionIdOk.cs" />
+    <Compile Include="Model\GetUniverseSchematicsSchematicIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseSchematicsSchematicIdOk.cs" />
+    <Compile Include="Model\GetUniverseStargatesStargateIdDestination.cs" />
+    <Compile Include="Model\GetUniverseStargatesStargateIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseStargatesStargateIdOk.cs" />
+    <Compile Include="Model\GetUniverseStargatesStargateIdPosition.cs" />
+    <Compile Include="Model\GetUniverseStarsStarIdOk.cs" />
+    <Compile Include="Model\GetUniverseStationsStationIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseStationsStationIdOk.cs" />
+    <Compile Include="Model\GetUniverseStationsStationIdPosition.cs" />
+    <Compile Include="Model\GetUniverseStructuresStructureIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseStructuresStructureIdOk.cs" />
+    <Compile Include="Model\GetUniverseStructuresStructureIdPosition.cs" />
+    <Compile Include="Model\GetUniverseSystemJumps200Ok.cs" />
+    <Compile Include="Model\GetUniverseSystemKills200Ok.cs" />
+    <Compile Include="Model\GetUniverseSystemsSystemIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseSystemsSystemIdOk.cs" />
+    <Compile Include="Model\GetUniverseSystemsSystemIdPlanet.cs" />
+    <Compile Include="Model\GetUniverseSystemsSystemIdPosition.cs" />
+    <Compile Include="Model\GetUniverseTypesTypeIdDogmaAttribute.cs" />
+    <Compile Include="Model\GetUniverseTypesTypeIdDogmaEffect.cs" />
+    <Compile Include="Model\GetUniverseTypesTypeIdNotFound.cs" />
+    <Compile Include="Model\GetUniverseTypesTypeIdOk.cs" />
+    <Compile Include="Model\GetWarsWarIdAggressor.cs" />
+    <Compile Include="Model\GetWarsWarIdAlly.cs" />
+    <Compile Include="Model\GetWarsWarIdDefender.cs" />
+    <Compile Include="Model\GetWarsWarIdKillmails200Ok.cs" />
+    <Compile Include="Model\GetWarsWarIdKillmailsUnprocessableEntity.cs" />
+    <Compile Include="Model\GetWarsWarIdOk.cs" />
+    <Compile Include="Model\GetWarsWarIdUnprocessableEntity.cs" />
+    <Compile Include="Model\InternalServerError.cs" />
+    <Compile Include="Model\PostCharactersAffiliation200Ok.cs" />
+    <Compile Include="Model\PostCharactersAffiliationNotFound.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdAssetsLocations200Ok.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdAssetsLocationsPosition.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdAssetsNames200Ok.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdContactsError520.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdFittingsCreated.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdFittingsFitting.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdFittingsItem.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdMailError520.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdMailLabelsLabel.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdMailMail.cs" />
+    <Compile Include="Model\PostCharactersCharacterIdMailRecipient.cs" />
+    <Compile Include="Model\PostCorporationsCorporationIdAssetsLocations200Ok.cs" />
+    <Compile Include="Model\PostCorporationsCorporationIdAssetsLocationsNotFound.cs" />
+    <Compile Include="Model\PostCorporationsCorporationIdAssetsLocationsPosition.cs" />
+    <Compile Include="Model\PostCorporationsCorporationIdAssetsNames200Ok.cs" />
+    <Compile Include="Model\PostCorporationsCorporationIdAssetsNamesNotFound.cs" />
+    <Compile Include="Model\PostFleetsFleetIdMembersInvitation.cs" />
+    <Compile Include="Model\PostFleetsFleetIdMembersNotFound.cs" />
+    <Compile Include="Model\PostFleetsFleetIdMembersUnprocessableEntity.cs" />
+    <Compile Include="Model\PostFleetsFleetIdWingsCreated.cs" />
+    <Compile Include="Model\PostFleetsFleetIdWingsNotFound.cs" />
+    <Compile Include="Model\PostFleetsFleetIdWingsWingIdSquadsCreated.cs" />
+    <Compile Include="Model\PostFleetsFleetIdWingsWingIdSquadsNotFound.cs" />
+    <Compile Include="Model\PostUiOpenwindowNewmailNewMail.cs" />
+    <Compile Include="Model\PostUiOpenwindowNewmailUnprocessableEntity.cs" />
+    <Compile Include="Model\PostUniverseIdsAgent.cs" />
+    <Compile Include="Model\PostUniverseIdsAlliance.cs" />
+    <Compile Include="Model\PostUniverseIdsCharacter.cs" />
+    <Compile Include="Model\PostUniverseIdsConstellation.cs" />
+    <Compile Include="Model\PostUniverseIdsCorporation.cs" />
+    <Compile Include="Model\PostUniverseIdsFaction.cs" />
+    <Compile Include="Model\PostUniverseIdsInventoryType.cs" />
+    <Compile Include="Model\PostUniverseIdsOk.cs" />
+    <Compile Include="Model\PostUniverseIdsRegion.cs" />
+    <Compile Include="Model\PostUniverseIdsStation.cs" />
+    <Compile Include="Model\PostUniverseIdsSystem.cs" />
+    <Compile Include="Model\PostUniverseNames200Ok.cs" />
+    <Compile Include="Model\PostUniverseNamesNotFound.cs" />
+    <Compile Include="Model\PutCharactersCharacterIdCalendarEventIdResponse.cs" />
+    <Compile Include="Model\PutCharactersCharacterIdMailMailIdContents.cs" />
+    <Compile Include="Model\PutFleetsFleetIdMembersMemberIdMovement.cs" />
+    <Compile Include="Model\PutFleetsFleetIdMembersMemberIdNotFound.cs" />
+    <Compile Include="Model\PutFleetsFleetIdMembersMemberIdUnprocessableEntity.cs" />
+    <Compile Include="Model\PutFleetsFleetIdNewSettings.cs" />
+    <Compile Include="Model\PutFleetsFleetIdNotFound.cs" />
+    <Compile Include="Model\PutFleetsFleetIdSquadsSquadIdNaming.cs" />
+    <Compile Include="Model\PutFleetsFleetIdSquadsSquadIdNotFound.cs" />
+    <Compile Include="Model\PutFleetsFleetIdWingsWingIdNaming.cs" />
+    <Compile Include="Model\PutFleetsFleetIdWingsWingIdNotFound.cs" />
+    <Compile Include="Model\ServiceUnavailable.cs" />
+    <Compile Include="Model\Unauthorized.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

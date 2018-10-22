@@ -8,11 +8,24 @@ namespace EveMarket.Controllers
 {
     public class HomeController : Controller
     {
+        private const string CookieName = "EveMarketCookie";
         private readonly IAuthenticationService _authenticationService;
 
         public HomeController(IAuthenticationService authenticationService)
         {
             this._authenticationService = authenticationService;
+        }
+
+        public IActionResult Index()
+        {
+            var cookie = Request.Cookies[CookieName];
+
+            if (cookie == null || !_authenticationService.CheckCookie())
+            {
+
+            }
+
+            return Ok();
         }
 
         public IActionResult Login()

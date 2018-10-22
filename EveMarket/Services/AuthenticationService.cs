@@ -84,5 +84,10 @@ namespace EveMarket.Services
 
             return JsonConvert.DeserializeObject<UserToken>(responseString);
         }
+
+        public bool CheckCookie()
+        {
+            return false;
+        }
     }
 }
