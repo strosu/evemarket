@@ -94,6 +94,7 @@
     <Compile Include="Client\IApiAccessor.cs" />
     <Compile Include="Client\IReadableConfiguration.cs" />
     <Compile Include="Client\SwaggerDateConverter.cs" />
+    <Compile Include="Extensions\ApiExtension.cs" />
     <Compile Include="Model\BadRequest.cs" />
     <Compile Include="Model\DeleteCharactersCharacterIdMailLabelsLabelIdUnprocessableEntity.cs" />
     <Compile Include="Model\DeleteFleetsFleetIdMembersMemberIdNotFound.cs" />

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using EveClientStandard.Extensions;
 using EveIndustry.Models;
 using IO.Swagger.Api;
 using IO.Swagger.Client;
@@ -21,6 +22,9 @@ namespace EveIndustry
         private CharInfo _charInfo;
         private UserToken _token;
         private MarketApi _marketApi;
+        private readonly List<Item> _marketItems;
+        private List<GetMarketsStructuresStructureId200Ok> _destinationOrders;
+
 
         private List<int> _highValueItems = new List<int>();
 
@@ -28,6 +32,7 @@ namespace EveIndustry
         {
             var byteArray = Encoding.ASCII.GetBytes(Credentials);
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+            _marketItems = ItemManager.GetMarketItems();
         }
 
         public static async Task<IndustryManager> Create(string token)
@@ -49,8 +54,61 @@ namespace EveIndustry
 
         public async Task GetPotentialItems(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
         {
-            var marketItems = ItemManager.GetMarketItems();
-            var sellable = await GetSellableItems(marketItems, regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay);
+            var sellable = await GetSellableItems(_marketItems, regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay);
+        }
+
+        public async Task<List<ItemPrice>> ComputeCurrentPrices(int buyRegionId, int sellRegionId)
+        {
+            await InitializeCitadelOrders();
+            var tasks = _marketItems.Select(item => ComputePrice(item.Id, buyRegionId, sellRegionId, 30000142, 30004759));
+            return (await Task.WhenAll(tasks)).ToList();
+        }
+
+        private async Task<ItemPrice> ComputePrice(int itemId, int buyRegion, int sellRegion, int buySystemId, int sellSystemId)
+        {
+            return new ItemPrice()
+            {
+                ItemId = itemId,
+                JitaPrice = await GetPriceForItemInRegion(itemId, buyRegion, buySystemId),
+                OneDQPrice= await GetPriceForItemInRegion(itemId, sellRegion, sellSystemId),
+            };
+        }
+
+        private async Task InitializeCitadelOrders()
+        {
+            var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>(){ "structure" }, _charInfo.CharacterID, "1DQ");
+            _destinationOrders = 
+                await ApiExtension.GetAll(
+                    index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index));
+            // _destinationOrders = await _marketApi.GetMarketsStructuresStructureIdAsync(1022734985679);
+        }
+
+        private async Task<double> GetPriceForItemInRegion(int itemId, int regionId, int systemId)
+        {
+            var sellOrders = await ApiExtension.GetAll(index =>
+                _marketApi.GetMarketsRegionIdOrdersAsyncWithHttpInfo("sell", regionId, "tranquility", typeId: itemId, page: index));
+            
+            // var sellOrders = await GetAllOrders(itemId, regionId);
+            var minPrice = sellOrders.Where(x => x.SystemId == systemId).OrderBy(x => x.Price).FirstOrDefault();
+            return minPrice?.Price ?? double.MaxValue;
+        }
+
+        private async Task<List<GetMarketsRegionIdOrders200Ok>> GetAllOrders(int itemId, int regionId)
+        {
+            var result = await _marketApi.GetMarketsRegionIdOrdersAsyncWithHttpInfo("sell", regionId, "tranquility", typeId: itemId);
+            var pages = int.Parse(result.Headers["X-Pages"]);
+            var list = result.Data;
+
+            var index = 1;
+            while (index < pages)
+            {
+                index++;
+                var currentPageResults =
+                    await _marketApi.GetMarketsRegionIdOrdersAsync("sell", regionId, "tranquility", typeId: itemId, page: index);
+                list.AddRange(currentPageResults);
+            }
+
+            return list;
         }
 
         private async Task<ConcurrentBag<Item>> GetSellableItems(List<Item> marketItems, int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
@@ -125,6 +183,7 @@ namespace EveIndustry
             // api.BasePath = "https://esi.tech.ccp.is";
             api.RestClient.AddDefaultHeader("access_token", _token.AccessToken);
             Configuration.Default.ApiClient = api;
+            Configuration.Default.AccessToken = _token.AccessToken;
             _marketApi = new MarketApi();
         }
 

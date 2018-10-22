@@ -31,7 +31,7 @@ namespace EveMarket.Controllers
         public IActionResult Login()
         {
             // Login whe no token is present
-            return Redirect("https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A44324%2FAuthentication&client_id=2590e8414d08467693e11d5e9ca22248&scope=esi-markets.structure_markets.v1%20esi-characters.read_blueprints.v1&state=uniquestate123");
+            return Redirect("https://login.eveonline.com/oauth/authorize/?response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A44324%2FAuthentication&client_id=2590e8414d08467693e11d5e9ca22248&scope=esi-markets.structure_markets.v1%20esi-characters.read_blueprints.v1%20esi-universe.read_structures.v1%20esi-search.search_structures.v1&state=uniquestate123");
         }
 
         public async Task<IActionResult> LoginWithToken()
