@@ -1,4 +1,5 @@
-﻿using EveClientStandard.Extensions;
+﻿using System;
+using EveClientStandard.Extensions;
 using EveIndustry.Client;
 using EveIndustry.Models;
 using IO.Swagger.Api;
@@ -18,6 +19,8 @@ namespace EveIndustry
         private MarketApi _marketApi;
         private List<Item> _marketItems;
         private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
+        private Dictionary<int, double> _destinationBuyPrices = new Dictionary<int, double>();
+        private Dictionary<int, double> _destinationSellPrices = new Dictionary<int, double>();
 
         private List<int> _highValueItems = new List<int>();
 
@@ -122,11 +125,33 @@ namespace EveIndustry
 
         private async Task InitializeCitadelOrders()
         {
-            // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>(){ "structure" }, _charInfo.CharacterID, "1DQ");
-            _destinationOrders = 
-                new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
-                    index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
-            File.WriteAllText(@"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json", JsonConvert.SerializeObject(await _destinationOrders.Value));
+            // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
+
+            var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
+            //_destinationOrders =
+            //    new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
+            //        index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
+            //File.WriteAllText(filePath, JsonConvert.SerializeObject(await _destinationOrders.Value));
+
+            using (StreamReader file = File.OpenText(filePath))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+
+                _destinationOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
+                    (List<GetMarketsStructuresStructureId200Ok>)serializer.Deserialize(file, typeof(List<GetMarketsStructuresStructureId200Ok>)));
+                var tmp = await _destinationOrders.Value;
+            }
+
+            _destinationSellPrices =
+                ApplyOrdersMapping((await _destinationOrders.Value).Where(x => x.IsBuyOrder.Value == false), list => list.Min(x => x.Price.Value));
+
+            _destinationBuyPrices = ApplyOrdersMapping((await _destinationOrders.Value).Where(x => x.IsBuyOrder.Value), list => list.Max(x => x.Price.Value));
+        }
+
+        private Dictionary<int, double> ApplyOrdersMapping(IEnumerable<GetMarketsStructuresStructureId200Ok> filteredOrders, Func<IEnumerable<GetMarketsStructuresStructureId200Ok>, double> func)
+        {
+            return filteredOrders.GroupBy(x => x.TypeId.Value,
+                (key, g) => new { TypeId = key, Prices = g.ToList() }).ToDictionary(x => x.TypeId, x => func(x.Prices));
         }
 
         private async Task<double> GetPriceForItemInRegion(int itemId, int regionId, int systemId)
