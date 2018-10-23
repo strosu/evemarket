@@ -11,7 +11,7 @@ namespace EveIndustry
         public static List<Item> GetMarketItems()
         {
             var result = new List<Item>();
-            var filePath = @"C:\work\git\evemarket\types.txt";
+            var filePath = @"Resources\types.txt";
 
             using (TextFieldParser parser = new TextFieldParser(filePath))
             {

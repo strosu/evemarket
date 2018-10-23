@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="IndustryManager.cs" />
     <Compile Include="ItemManager.cs" />
+    <Compile Include="LazyAsync.cs" />
     <Compile Include="Models\CharInfo.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\ItemPrice.cs" />
@@ -70,6 +71,12 @@
       <Project>{bd057bb2-8b40-4a4b-a313-f0b39c8a6029}</Project>
       <Name>EveClientStandard</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\types.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
