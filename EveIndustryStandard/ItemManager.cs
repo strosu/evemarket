@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using EveIndustry.Models;
+﻿using EveIndustry.Models;
 using Microsoft.VisualBasic.FileIO;
+using System.Collections.Generic;
 
 namespace EveIndustry
 {

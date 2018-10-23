@@ -1,11 +1,14 @@
-﻿namespace EveIndustry.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace EveIndustry.Models
 {
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
     public class ItemPrice
     {
         public int ItemId { get; set; }
 
-        public double JitaPrice { get; set; }
+        public double JitaSellPrice { get; set; }
 
-        public double OneDQPrice { get; set; }
+        public double OneDqSellPrice { get; set; }
     }
 }

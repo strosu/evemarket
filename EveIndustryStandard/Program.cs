@@ -6,8 +6,6 @@ namespace EveIndustry
 {
     class Program
     {
-        private const string RefreshToken = "MTAnnx9LZz-XAFZ1pEQkK-YRJw2Kj5AjGMcZOd4ZwsUk8iceeTKhOQvCzAv1EafA0";
-
         public static void Main(string[] args)
         {
             MainAsync(args).GetAwaiter().GetResult();
@@ -23,7 +21,7 @@ namespace EveIndustry
             var daysToEvaluate = int.Parse(ConfigurationManager.AppSettings["DaysToEvaluate"]);
             var minOrdersPerDay = int.Parse(ConfigurationManager.AppSettings["MinOrdersPerDay"]);
 
-            var manager = await IndustryManager.Create(RefreshToken);
+            var manager = await IndustryManager.Create();
             var currentPrices = await manager.ComputeCurrentPrices(sourceRegionId, regionId);
             //await manager.GetPotentialItems(regionId, minOrdersPerDay, minAverageVolumePerDay, daysToEvaluate);
 

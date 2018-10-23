@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\ClientManager.cs" />
     <Compile Include="IndustryManager.cs" />
     <Compile Include="ItemManager.cs" />
     <Compile Include="LazyAsync.cs" />
