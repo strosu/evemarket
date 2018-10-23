@@ -15,7 +15,7 @@ using RestSharp;
 
 namespace EveIndustry
 {
-    public class IndustryManager
+    public partial class IndustryManager
     {
         private static readonly HttpClient client = new HttpClient();
         private static readonly string Credentials = "2590e8414d08467693e11d5e9ca22248:zBv5izRIZiiPIAf8tOAcUyeVckw0Qckfeflwg9zz";
@@ -23,8 +23,7 @@ namespace EveIndustry
         private UserToken _token;
         private MarketApi _marketApi;
         private readonly List<Item> _marketItems;
-        private List<GetMarketsStructuresStructureId200Ok> _destinationOrders;
-
+        private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
 
         private List<int> _highValueItems = new List<int>();
 
@@ -59,7 +58,7 @@ namespace EveIndustry
 
         public async Task<List<ItemPrice>> ComputeCurrentPrices(int buyRegionId, int sellRegionId)
         {
-            await InitializeCitadelOrders();
+            InitializeCitadelOrders();
             var tasks = _marketItems.Select(item => ComputePrice(item.Id, buyRegionId, sellRegionId, 30000142, 30004759));
             return (await Task.WhenAll(tasks)).ToList();
         }
@@ -74,12 +73,13 @@ namespace EveIndustry
             };
         }
 
-        private async Task InitializeCitadelOrders()
+        private void InitializeCitadelOrders()
         {
-            var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>(){ "structure" }, _charInfo.CharacterID, "1DQ");
+            // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>(){ "structure" }, _charInfo.CharacterID, "1DQ");
             _destinationOrders = 
-                await ApiExtension.GetAll(
-                    index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index));
+                new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
+                    index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
+
             // _destinationOrders = await _marketApi.GetMarketsStructuresStructureIdAsync(1022734985679);
         }
 
