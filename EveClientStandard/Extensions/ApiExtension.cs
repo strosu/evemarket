@@ -11,8 +11,14 @@ namespace EveClientStandard.Extensions
     {
         public static async Task<List<TResponse>> GetAll<TResponse>(Func<int, Task<ApiResponse<List<TResponse>>>> func)
         {
+            var pageHeader = "X-Pages";
             var result = await func(1);
-            var pages = int.Parse(result.Headers["X-Pages"]);
+
+            if (!result.Headers.ContainsKey(pageHeader) || !int.TryParse(result.Headers[pageHeader], out var pages))
+            {
+                return result.Data;
+            }
+
             var response = new List<TResponse>(result.Data);
             var taskList = new List<Task<ApiResponse<List<TResponse>>>>();
 

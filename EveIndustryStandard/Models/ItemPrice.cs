@@ -17,20 +17,22 @@ namespace EveIndustry.Models
 
         public double OneDqBuyPrice { get; set; }
 
-        public int? BpcItemId { get; set; }
+        public BlueprintCopy Blueprint { get; set; }
 
         public List<ItemPriceWithAmount> Components { get; set; }
 
         public int? MaxRunsPerBpc { get; set; }
 
-        public double BuildPrice => BpcItemId.HasValue ? Components.Sum(x => x.Item.BestPrice * x.Amount) + MaterialsManager.GetInstallCost(this) : double.MaxValue;
+        public double? InstallCost { get; set; }
+
+        public double BuildPrice => Blueprint != null ? Components.Sum(x => x.Item.BestPrice * x.Amount) + InstallCost.Value : double.MaxValue;
 
         public double BestPrice
         {
             get
             {
                 var min = Min(JitaSellPrice, OneDqSellPrice);
-                return BpcItemId.HasValue ? Min(min, BuildPrice) : min;
+                return Blueprint != null ? Min(min, BuildPrice) : min;
             }
         }
 

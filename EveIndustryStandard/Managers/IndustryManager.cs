@@ -14,11 +14,10 @@ using Newtonsoft.Json;
 
 namespace EveIndustryStandard.Managers
 {
-    public partial class IndustryManager
+    public class IndustryManager
     {
         private CharInfo _charInfo;
         private MarketApi _marketApi;
-        private ContractsApi _contractsApi;
         private Dictionary<int, Item> _marketItems;
         private Dictionary<int, BlueprintCopy> _bpcs;
         private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
@@ -33,7 +32,6 @@ namespace EveIndustryStandard.Managers
             _marketItems = ItemManager.GetMarketItems();
             _bpcs = BlueprintManager.GetBlueprints();
             _marketApi = new MarketApi();
-            _contractsApi = new ContractsApi();
         }
 
         public static async Task<IndustryManager> Create()
@@ -43,12 +41,6 @@ namespace EveIndustryStandard.Managers
             await manager.InitializeCitadelOrders();
             // await manager.InitializeSourceAndDestContracts();
             return manager;
-        }
-
-        private async Task InitializeSourceAndDestContracts()
-        {
-            var sourceContracts = await ApiExtension.GetAll(index => _contractsApi.GetContractsPublicRegionIdAsyncWithHttpInfo(10000002, page: index));
-            var destContracts = await ApiExtension.GetAll(index => _contractsApi.GetContractsPublicRegionIdAsyncWithHttpInfo(10000060, page: index));
         }
 
         #region sellable - move
@@ -137,7 +129,7 @@ namespace EveIndustryStandard.Managers
                 JitaSellPrice = await GetPriceForItemInRegion(itemId, buyRegion, buySystemId),
                 OneDqSellPrice = GetSellPriceForItemAtDestination(itemId),
                 OneDqBuyPrice = GetBuyPriceForItemAtDestination(itemId),
-                BpcItemId = bpcItemId,
+                Blueprint = bpcItemId != null ? _bpcs[bpcItemId.Value] : null,
                 Components = bpcItemId != null ? 
                     _bpcs[bpcItemId.Value].RequiredComponentsForSingleRun.Select(
                         x => new ItemPriceWithAmount()
@@ -146,7 +138,8 @@ namespace EveIndustryStandard.Managers
                             Amount = GetRequiredComponents(bpcItemId.Value, x.Id)
                         }).ToList() 
                     : null,
-                MaxRunsPerBpc = bpcItemId != null ? (int?)_bpcs[bpcItemId.Value].MaxRuns : null
+                MaxRunsPerBpc = bpcItemId != null ? (int?)_bpcs[bpcItemId.Value].MaxRuns : null,
+                InstallCost = bpcItemId != null ? (double?)MaterialsManager.GetInstallCost(_bpcs[bpcItemId.Value]) : null
             };
 
             _itemCache.Add(itemId, zz);

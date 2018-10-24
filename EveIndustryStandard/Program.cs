@@ -24,8 +24,8 @@ namespace EveIndustry
 
             var manager = await IndustryManager.Create(); 
             var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
-            var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
-            var resultNyx = await manager.ComputePrice(23913, sourceRegionId, 30000142); 
+            //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
+            //var resultNyx = await manager.ComputePrice(23913, sourceRegionId, 30000142); 
             // var currentPrices = await manager.ComputeCurrentPrices(sourceRegionId, regionId);
             //await manager.GetPotentialItems(regionId, minOrdersPerDay, minAverageVolumePerDay, daysToEvaluate);
 
