@@ -53,12 +53,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\ClientManager.cs" />
-    <Compile Include="IndustryManager.cs" />
-    <Compile Include="ItemManager.cs" />
+    <Compile Include="Managers\BlueprintManager.cs" />
+    <Compile Include="Managers\IndustryManager.cs" />
+    <Compile Include="Managers\ItemManager.cs" />
     <Compile Include="LazyAsync.cs" />
+    <Compile Include="Managers\MaterialsManager.cs" />
+    <Compile Include="Models\BlueprintCopy.cs" />
     <Compile Include="Models\CharInfo.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\ItemPrice.cs" />
+    <Compile Include="Models\ItemPriceWithAmount.cs" />
     <Compile Include="Models\UserToken.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,6 +70,15 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Resources\industryActivityMaterials.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\industryBlueprints.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\onedq.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EveClientStandard\EveClientStandard.csproj">

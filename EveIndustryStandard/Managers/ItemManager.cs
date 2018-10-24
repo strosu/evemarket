@@ -1,14 +1,14 @@
-﻿using EveIndustry.Models;
+﻿using System.Collections.Generic;
+using EveIndustry.Models;
 using Microsoft.VisualBasic.FileIO;
-using System.Collections.Generic;
 
-namespace EveIndustry
+namespace EveIndustryStandard.Managers
 {
     public class ItemManager
     {
-        public static List<Item> GetMarketItems()
+        public static Dictionary<int, Item> GetMarketItems()
         {
-            var result = new List<Item>();
+            var result = new Dictionary<int, Item>();
             var filePath = @"Resources\types.txt";
 
             using (TextFieldParser parser = new TextFieldParser(filePath))
@@ -54,9 +54,10 @@ namespace EveIndustry
                     var marketGroup = fields[13];
                     if (!string.IsNullOrEmpty(marketGroup))
                     {
-                        result.Add(new Item
+                        var id = int.Parse(fields[0]);
+                        result.Add(id, new Item
                         {
-                            Id = int.Parse(fields[0]),
+                            Id = id,
                             Name = fields[2].Trim(),
                             MarketGroup = int.Parse(marketGroup),
                             Group = int.Parse(fields[1])
