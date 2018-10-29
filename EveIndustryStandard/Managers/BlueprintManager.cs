@@ -8,8 +8,6 @@ namespace EveIndustryStandard.Managers
 {
     public class BlueprintManager
     {
-        private const double Modifier = 0.948;
-
         public static Dictionary<int, BlueprintCopy> GetBlueprints()
         {
             var result = new Dictionary<int, BlueprintCopy>();

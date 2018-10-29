@@ -6,9 +6,9 @@ namespace EveIndustryStandard.Managers
 {
     public class ItemManager
     {
-        public static Dictionary<int, Item> GetMarketItems()
+        public static Dictionary<int, MarketItem> GetMarketItems()
         {
-            var result = new Dictionary<int, Item>();
+            var result = new Dictionary<int, MarketItem>();
             var filePath = @"Resources\types.txt";
 
             using (TextFieldParser parser = new TextFieldParser(filePath))
@@ -55,7 +55,7 @@ namespace EveIndustryStandard.Managers
                     if (!string.IsNullOrEmpty(marketGroup))
                     {
                         var id = int.Parse(fields[0]);
-                        result.Add(id, new Item
+                        result.Add(id, new MarketItem
                         {
                             Id = id,
                             Name = fields[2].Trim(),

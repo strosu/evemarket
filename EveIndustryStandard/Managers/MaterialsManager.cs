@@ -25,12 +25,12 @@ namespace EveIndustryStandard.Managers
             return jobFee + facilityTax;
         }
 
-        public static Dictionary<int?, double?> GetAdjustedPrices()
+        private static Dictionary<int?, double?> GetAdjustedPrices()
         {
             return ApiExtension.GetAll(index => new MarketApi().GetMarketsPricesAsyncWithHttpInfo()).Result.ToDictionary(x => x.TypeId, x => x.AdjustedPrice);
         }
 
-        public static double GetAdjustedPrice(int itemId)
+        private static double GetAdjustedPrice(int itemId)
         {
             if (!AdjustedPrices.ContainsKey(itemId))
             {

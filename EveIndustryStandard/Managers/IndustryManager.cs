@@ -18,12 +18,13 @@ namespace EveIndustryStandard.Managers
     {
         private CharInfo _charInfo;
         private MarketApi _marketApi;
-        private Dictionary<int, Item> _marketItems;
+        private Dictionary<int, MarketItem> _marketItems;
         private Dictionary<int, BlueprintCopy> _bpcs;
         private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
         private Dictionary<int, double> _destinationBuyPrices = new Dictionary<int, double>();
         private Dictionary<int, double> _destinationSellPrices = new Dictionary<int, double>();
-        private Dictionary<int, ItemPrice> _itemCache = new Dictionary<int, ItemPrice>();
+        private Dictionary<int, ItemPrice> _itemPriceCache = new Dictionary<int, ItemPrice>();
+        private Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
 
         private List<int> _highValueItems = new List<int>();
 
@@ -50,9 +51,9 @@ namespace EveIndustryStandard.Managers
             var sellable = await GetSellableItems(regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay);
         }
 
-        private async Task<ConcurrentBag<Item>> GetSellableItems(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
+        private async Task<ConcurrentBag<MarketItem>> GetSellableItems(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
         {
-            var result = new ConcurrentBag<Item>();
+            var result = new ConcurrentBag<MarketItem>();
 
             var tasks = _marketItems.Select(async item =>
             {
@@ -66,11 +67,11 @@ namespace EveIndustryStandard.Managers
             return result;
         }
 
-        private async Task<bool> HasMarket(Item item, int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
+        private async Task<bool> HasMarket(MarketItem marketItem, int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
         {
             try
             {
-                var orders = (await _marketApi.GetMarketsRegionIdHistoryAsync(regionId, item.Id)).OrderByDescending(x => x.Date)
+                var orders = (await _marketApi.GetMarketsRegionIdHistoryAsync(regionId, marketItem.Id)).OrderByDescending(x => x.Date)
                     .Take(daysToEvaluate).ToList();
 
                 return AreConsecutiveDays(orders, daysToEvaluate)
@@ -115,9 +116,9 @@ namespace EveIndustryStandard.Managers
 
         public async Task<ItemPrice> ComputePrice(int itemId, int buyRegion, int buySystemId)
         {
-            if (_itemCache.ContainsKey(itemId))
+            if (_itemPriceCache.ContainsKey(itemId))
             {
-                return _itemCache[itemId];
+                return _itemPriceCache[itemId];
             }
 
             var itemName = _marketItems[itemId].Name;
@@ -130,17 +131,42 @@ namespace EveIndustryStandard.Managers
                 OneDqSellPrice = GetSellPriceForItemAtDestination(itemId),
                 OneDqBuyPrice = GetBuyPriceForItemAtDestination(itemId),
                 Blueprint = bpcItemId != null ? _bpcs[bpcItemId.Value] : null,
-                Components = bpcItemId != null ? 
+                Components = bpcItemId != null ?
                     _bpcs[bpcItemId.Value].RequiredComponentsForSingleRun.Select(
                         x => new ItemPriceWithAmount()
                         {
                             Item = ComputePrice(x.Id, buyRegion, buySystemId).Result,
                             Amount = GetRequiredComponents(bpcItemId.Value, x.Id)
-                        }).ToList() 
+                        }).ToList()
                     : null,
                 MaxRunsPerBpc = bpcItemId != null ? (int?)_bpcs[bpcItemId.Value].MaxRuns : null,
                 InstallCost = bpcItemId != null ? (double?)MaterialsManager.GetInstallCost(_bpcs[bpcItemId.Value]) : null
             };
+
+            _itemPriceCache.Add(itemId, zz);
+
+            return zz;
+        }
+
+        public async Task<Item> ComputePrice2(int itemId, int buyRegion, int buySystemId)
+        {
+            if (_itemCache.ContainsKey(itemId))
+            {
+                return _itemCache[itemId];
+            }
+
+            var itemName = _marketItems[itemId].Name;
+            var bpcItemId = GetBpcItemId(itemName);
+            var bpc = bpcItemId != null ? _bpcs[bpcItemId.Value] : null;
+
+            var zz = new Item()
+                {
+                    Id = itemId,
+
+                }
+                .WithOneDqBuildStrategy(bpc)
+                .WithOneDqBuyStategy(_destinationSellPrices)
+                .Build();
 
             _itemCache.Add(itemId, zz);
 
@@ -162,7 +188,11 @@ namespace EveIndustryStandard.Managers
         {
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
 
-            var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
+            // home
+            // var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
+
+            var filePath = @"C:\work\git\evemarket\EveIndustryStandard\Resources\onedq.json";
+
             //_destinationOrders =
             //    new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
             //        index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
@@ -207,7 +237,7 @@ namespace EveIndustryStandard.Managers
         {
             var sellOrders = await ApiExtension.GetAll(index =>
                 _marketApi.GetMarketsRegionIdOrdersAsyncWithHttpInfo("sell", regionId, "tranquility", typeId: itemId, page: index));
-            
+
             // var sellOrders = await GetAllOrders(itemId, regionId);
             var minPrice = sellOrders.Where(x => x.SystemId == systemId).OrderBy(x => x.Price).FirstOrDefault();
             var price = minPrice?.Price ?? double.MaxValue;
