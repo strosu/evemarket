@@ -12,6 +12,6 @@ namespace EveIndustry.Models
     {
         public int MaxRuns { get; set; }
 
-        public List<Component> RequiredComponentsForSingleRun { get; set; }
+        public List<Component> UnresearchedRequiredComponentsForSingleRun { get; set; }
     }
 }

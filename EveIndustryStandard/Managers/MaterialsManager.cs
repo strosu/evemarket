@@ -13,7 +13,7 @@ namespace EveIndustryStandard.Managers
 
         public static double GetInstallCost(BlueprintCopy bpc)
         {
-            var components = bpc.RequiredComponentsForSingleRun;
+            var components = bpc.UnresearchedRequiredComponentsForSingleRun;
             var baseJobCost = components.Sum(x => GetAdjustedPrice(x.Id) * x.Amount);
 
             var currentSystemIndex = 0.0591;

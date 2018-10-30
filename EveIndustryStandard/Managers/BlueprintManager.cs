@@ -64,7 +64,7 @@ namespace EveIndustryStandard.Managers
                 result.Add(key, new BlueprintCopy()
                 {
                     MaxRuns = maxRunsDictionary[key],
-                    RequiredComponentsForSingleRun = materialsDictionary[key].Select(x => new Component()
+                    UnresearchedRequiredComponentsForSingleRun = materialsDictionary[key].Select(x => new Component()
                     {
                         Id = x.Item1,
                         Amount = x.Item2

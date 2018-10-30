@@ -132,7 +132,7 @@ namespace EveIndustryStandard.Managers
                 OneDqBuyPrice = GetBuyPriceForItemAtDestination(itemId),
                 Blueprint = bpcItemId != null ? _bpcs[bpcItemId.Value] : null,
                 Components = bpcItemId != null ?
-                    _bpcs[bpcItemId.Value].RequiredComponentsForSingleRun.Select(
+                    _bpcs[bpcItemId.Value].UnresearchedRequiredComponentsForSingleRun.Select(
                         x => new ItemPriceWithAmount()
                         {
                             Item = ComputePrice(x.Id, buyRegion, buySystemId).Result,
@@ -181,7 +181,7 @@ namespace EveIndustryStandard.Managers
         private int GetRequiredComponents(int bpcId, int componentTypeId)
         {
             var multiplier = 0.853578;
-            return (int)Math.Ceiling(_bpcs[bpcId].RequiredComponentsForSingleRun.FirstOrDefault(x => x.Id == componentTypeId).Amount * multiplier);
+            return (int)Math.Ceiling(_bpcs[bpcId].UnresearchedRequiredComponentsForSingleRun.FirstOrDefault(x => x.Id == componentTypeId).Amount * multiplier);
         }
 
         private async Task InitializeCitadelOrders()

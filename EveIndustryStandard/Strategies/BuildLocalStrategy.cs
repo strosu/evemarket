@@ -26,11 +26,11 @@ namespace EveIndustry.Strategies
 
         protected override Task<double?> ComputePrice()
         {
-            var installCost = GetInstallCost();
+            var installCost = GetInstallCost() * _item.Amount;
 
-            var componentsCost = _item.Components
+            var componentsCost = 0d;
 
-            return installCost;
+            return Task.FromResult((double?)installCost + componentsCost);
         }
 
         private double GetInstallCost()

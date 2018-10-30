@@ -5,12 +5,13 @@ namespace EveIndustryStandard.Managers
 {
     public class ItemBuilder
     {
-        private readonly BlueprintCopy _bpc;
-        public List<ItemWithAmount> Components;
-
-        public ItemBuilder(BlueprintCopy bpc)
+        public static List<Item> GetComponents(BlueprintCopy bpc)
         {
-            _bpc = bpc;
+            var result = new List<Item>();
+
+
+
+            return result;
         }
     }
 }

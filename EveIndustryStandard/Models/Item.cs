@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EveIndustry.Strategies;
@@ -10,9 +11,11 @@ namespace EveIndustry.Models
     {
         public int Id { get; set; }
 
-        public List<ItemWithAmount> Components => _itemBuilder.Components;
+        public int Amount { get; set; }
 
-        private ItemBuilder _itemBuilder;
+        public double BestPrice => _obtainingStrategies.Max(x => x.GetPrice);
+
+        public List<Item> Components { get; set; }
 
         private readonly List<ObtainingStrategy> _obtainingStrategies  = new List<ObtainingStrategy>();
 
@@ -25,7 +28,6 @@ namespace EveIndustry.Models
         public Item WithOneDqBuildStrategy(BlueprintCopy bpc)
         {
             _obtainingStrategies.Add(BuildLocalStrategy.Build(this, bpc));
-            _itemBuilder = new ItemBuilder(bpc);
             return this;
         }
 

@@ -26,7 +26,7 @@ namespace EveIndustry.Strategies
 
         protected override Task<double?> ComputePrice()
         {
-            return Task.FromResult(GetSellPriceForItemAtDestination(_item.Id, _localSellOders));
+            return Task.FromResult(GetSellPriceForItemAtDestination(_item.Id, _localSellOders) * _item.Amount);
         }
 
         public override void PrintObtainingMethod(int amount)
