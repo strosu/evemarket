@@ -40,8 +40,8 @@ namespace EveIndustry.Client
         {
             var api = new ApiClient();
             api.RestClient.AddDefaultHeader("User-Agent", "Ender's agent"); // Set a relevant user agent so we know which software is actually using ESI
-            api.RestClient.BaseUrl = new Uri("https://esi.tech.ccp.is");
-            // api.BasePath = "https://esi.tech.ccp.is";
+            api.RestClient.BaseUrl = new Uri("https://esi.evetech.net");
+            // api.BasePath = "https://esi.evetech.net";
             api.RestClient.AddDefaultHeader("access_token", _token.AccessToken);
             Configuration.Default.ApiClient = api;
             Configuration.Default.AccessToken = _token.AccessToken;

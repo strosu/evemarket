@@ -27,18 +27,20 @@ namespace EveIndustryStandard.Managers
         private Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
 
         private List<int> _highValueItems = new List<int>();
+        private readonly bool refreshCitadelData;
 
-        private IndustryManager()
+        private IndustryManager(bool refreshCitadelData)
         {
             _marketItems = ItemManager.GetMarketItems();
             _bpcs = BlueprintManager.GetBlueprints();
             _marketApi = new MarketApi();
+            this.refreshCitadelData = refreshCitadelData;
         }
 
-        public static async Task<IndustryManager> Create()
+        public static async Task<IndustryManager> Create(bool refreshCitadelData)
         {
             await ClientManager.Build();
-            var manager = new IndustryManager();
+            var manager = new IndustryManager(refreshCitadelData);
             await manager.InitializeCitadelOrders();
             // await manager.InitializeSourceAndDestContracts();
             return manager;
@@ -189,14 +191,18 @@ namespace EveIndustryStandard.Managers
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
 
             // home
-            // var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
+            var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
 
-            var filePath = @"C:\work\git\evemarket\EveIndustryStandard\Resources\onedq.json";
+            // work
+            //var filePath = @"C:\work\git\evemarket\EveIndustryStandard\Resources\onedq.json";
 
-            //_destinationOrders =
-            //    new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
-            //        index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
-            //File.WriteAllText(filePath, JsonConvert.SerializeObject(await _destinationOrders.Value));
+            if (refreshCitadelData)
+            {
+                _destinationOrders =
+                    new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
+                        index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(await _destinationOrders.Value));
+            }
 
             using (StreamReader file = File.OpenText(filePath))
             {

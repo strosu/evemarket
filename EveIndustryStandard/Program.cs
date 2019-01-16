@@ -21,8 +21,9 @@ namespace EveIndustry
             var minAverageVolumePerDay = int.Parse(ConfigurationManager.AppSettings["MinAverageVolumePerDay"]);
             var daysToEvaluate = int.Parse(ConfigurationManager.AppSettings["DaysToEvaluate"]);
             var minOrdersPerDay = int.Parse(ConfigurationManager.AppSettings["MinOrdersPerDay"]);
+            var refreshCitadelData = bool.Parse(ConfigurationManager.AppSettings["RefreshCitadelData"]);
 
-            var manager = await IndustryManager.Create(); 
+            var manager = await IndustryManager.Create(refreshCitadelData); 
             var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
             var result2 = await manager.ComputePrice2(23055, sourceRegionId, 30000142);
             //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
