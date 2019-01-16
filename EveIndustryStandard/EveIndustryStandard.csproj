@@ -70,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strategies\BuildLocalStrategy.cs" />
     <Compile Include="Strategies\BuyLocalStrategy.cs" />
+    <Compile Include="Strategies\ItemFactory.cs" />
     <Compile Include="Strategies\ObtainingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>

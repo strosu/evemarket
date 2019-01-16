@@ -24,7 +24,7 @@ namespace EveIndustry
             var refreshCitadelData = bool.Parse(ConfigurationManager.AppSettings["RefreshCitadelData"]);
 
             var manager = await IndustryManager.Create(refreshCitadelData); 
-            var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
+            // var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
             var result2 = await manager.ComputePrice2(23055, sourceRegionId, 30000142);
             //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
             //var resultNyx = await manager.ComputePrice(23913, sourceRegionId, 30000142); 

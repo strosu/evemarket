@@ -8,6 +8,7 @@ using EveClientStandard.Extensions;
 using EveIndustry;
 using EveIndustry.Client;
 using EveIndustry.Models;
+using EveIndustryStandard.Strategies;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
 using Newtonsoft.Json;
@@ -25,24 +26,24 @@ namespace EveIndustryStandard.Managers
         private Dictionary<int, double> _destinationSellPrices = new Dictionary<int, double>();
         private Dictionary<int, ItemPrice> _itemPriceCache = new Dictionary<int, ItemPrice>();
         private Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
+        private ItemFactory _itemFactory;
 
         private List<int> _highValueItems = new List<int>();
-        private readonly bool refreshCitadelData;
 
-        private IndustryManager(bool refreshCitadelData)
+        private IndustryManager(Dictionary<int, double> destinationBuyPrices, Dictionary<int, double> destinationSellPrices, MarketApi marketApi)
         {
             _marketItems = ItemManager.GetMarketItems();
             _bpcs = BlueprintManager.GetBlueprints();
-            _marketApi = new MarketApi();
-            this.refreshCitadelData = refreshCitadelData;
+            _marketApi = marketApi;
+            _itemFactory = new ItemFactory(_marketItems, _bpcs, destinationBuyPrices, destinationSellPrices);
         }
 
         public static async Task<IndustryManager> Create(bool refreshCitadelData)
         {
             await ClientManager.Build();
-            var manager = new IndustryManager(refreshCitadelData);
-            await manager.InitializeCitadelOrders();
-            // await manager.InitializeSourceAndDestContracts();
+            var marketApi = new MarketApi();
+            var orders = await InitializeCitadelOrders(refreshCitadelData, marketApi);
+            var manager = new IndustryManager(orders.Item2, orders.Item1, marketApi);
             return manager;
         }
 
@@ -110,45 +111,45 @@ namespace EveIndustryStandard.Managers
 
         #endregion
 
-        public async Task<List<ItemPrice>> ComputeCurrentPrices(int buyRegionId)
-        {
-            var tasks = _marketItems.Values.Select(item => ComputePrice(item.Id, buyRegionId, 30000142));
-            return (await Task.WhenAll(tasks)).ToList();
-        }
+        //public async Task<List<ItemPrice>> ComputeCurrentPrices(int buyRegionId)
+        //{
+        //    var tasks = _marketItems.Values.Select(item => ComputePrice(item.Id, buyRegionId, 30000142));
+        //    return (await Task.WhenAll(tasks)).ToList();
+        //}
 
-        public async Task<ItemPrice> ComputePrice(int itemId, int buyRegion, int buySystemId)
-        {
-            if (_itemPriceCache.ContainsKey(itemId))
-            {
-                return _itemPriceCache[itemId];
-            }
+        //public async Task<ItemPrice> ComputePrice(int itemId, int buyRegion, int buySystemId)
+        //{
+        //    if (_itemPriceCache.ContainsKey(itemId))
+        //    {
+        //        return _itemPriceCache[itemId];
+        //    }
 
-            var itemName = _marketItems[itemId].Name;
-            var bpcItemId = GetBpcItemId(itemName);
+        //    var itemName = _marketItems[itemId].Name;
+        //    var bpcItemId = GetBpcItemId(itemName);
 
-            var zz = new ItemPrice()
-            {
-                ItemId = itemId,
-                JitaSellPrice = await GetPriceForItemInRegion(itemId, buyRegion, buySystemId),
-                OneDqSellPrice = GetSellPriceForItemAtDestination(itemId),
-                OneDqBuyPrice = GetBuyPriceForItemAtDestination(itemId),
-                Blueprint = bpcItemId != null ? _bpcs[bpcItemId.Value] : null,
-                Components = bpcItemId != null ?
-                    _bpcs[bpcItemId.Value].UnresearchedRequiredComponentsForSingleRun.Select(
-                        x => new ItemPriceWithAmount()
-                        {
-                            Item = ComputePrice(x.Id, buyRegion, buySystemId).Result,
-                            Amount = GetRequiredComponents(bpcItemId.Value, x.Id)
-                        }).ToList()
-                    : null,
-                MaxRunsPerBpc = bpcItemId != null ? (int?)_bpcs[bpcItemId.Value].MaxRuns : null,
-                InstallCost = bpcItemId != null ? (double?)MaterialsManager.GetInstallCost(_bpcs[bpcItemId.Value]) : null
-            };
+        //    var zz = new ItemPrice()
+        //    {
+        //        ItemId = itemId,
+        //        JitaSellPrice = await GetPriceForItemInRegion(itemId, buyRegion, buySystemId),
+        //        OneDqSellPrice = GetSellPriceForItemAtDestination(itemId),
+        //        OneDqBuyPrice = GetBuyPriceForItemAtDestination(itemId),
+        //        Blueprint = bpcItemId != null ? _bpcs[bpcItemId.Value] : null,
+        //        Components = bpcItemId != null ?
+        //            _bpcs[bpcItemId.Value].UnresearchedRequiredComponentsForSingleRun.Select(
+        //                x => new ItemPriceWithAmount()
+        //                {
+        //                    Item = ComputePrice(x.Id, buyRegion, buySystemId).Result,
+        //                    Amount = GetRequiredComponents(bpcItemId.Value, x.Id)
+        //                }).ToList()
+        //            : null,
+        //        MaxRunsPerBpc = bpcItemId != null ? (int?)_bpcs[bpcItemId.Value].MaxRuns : null,
+        //        InstallCost = bpcItemId != null ? (double?)MaterialsManager.GetInstallCost(_bpcs[bpcItemId.Value]) : null
+        //    };
 
-            _itemPriceCache.Add(itemId, zz);
+        //    _itemPriceCache.Add(itemId, zz);
 
-            return zz;
-        }
+        //    return zz;
+        //}
 
         public async Task<Item> ComputePrice2(int itemId, int buyRegion, int buySystemId)
         {
@@ -157,27 +158,11 @@ namespace EveIndustryStandard.Managers
                 return _itemCache[itemId];
             }
 
-            var itemName = _marketItems[itemId].Name;
-            var bpcItemId = GetBpcItemId(itemName);
-            var bpc = bpcItemId != null ? _bpcs[bpcItemId.Value] : null;
-
-            var zz = new Item()
-                {
-                    Id = itemId,
-
-                }
-                .WithOneDqBuildStrategy(bpc)
-                .WithOneDqBuyStategy(_destinationSellPrices)
-                .Build();
+            var zz = _itemFactory.Build(itemId);
 
             _itemCache.Add(itemId, zz);
 
             return zz;
-        }
-
-        private int? GetBpcItemId(string itemName)
-        {
-            return _marketItems.Values.FirstOrDefault(x => x.Name == itemName + " Blueprint")?.Id;
         }
 
         private int GetRequiredComponents(int bpcId, int componentTypeId)
@@ -186,7 +171,7 @@ namespace EveIndustryStandard.Managers
             return (int)Math.Ceiling(_bpcs[bpcId].UnresearchedRequiredComponentsForSingleRun.FirstOrDefault(x => x.Id == componentTypeId).Amount * multiplier);
         }
 
-        private async Task InitializeCitadelOrders()
+        private static async Task<Tuple<Dictionary<int, double>, Dictionary<int, double>>> InitializeCitadelOrders(bool refreshCitadelData, MarketApi marketApi)
         {
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
 
@@ -195,38 +180,41 @@ namespace EveIndustryStandard.Managers
 
             // work
             //var filePath = @"C:\work\git\evemarket\EveIndustryStandard\Resources\onedq.json";
+            LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders;
 
             if (refreshCitadelData)
             {
-                _destinationOrders =
+                destinationOrders =
                     new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
-                        index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(await _destinationOrders.Value));
+                        index => marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(await destinationOrders.Value));
             }
 
             using (StreamReader file = File.OpenText(filePath))
             {
                 JsonSerializer serializer = new JsonSerializer();
 
-                _destinationOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
+                destinationOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
                     (List<GetMarketsStructuresStructureId200Ok>)serializer.Deserialize(file, typeof(List<GetMarketsStructuresStructureId200Ok>)));
-                var tmp = await _destinationOrders.Value;
+                var tmp = await destinationOrders.Value;
             }
 
-            _destinationSellPrices =
-                (await GetCitadelSellOrders()).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
+            var destinationSellPrices =
+                (await GetCitadelSellOrders(destinationOrders)).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
 
-            _destinationBuyPrices = (await GetCitadelBuyOrders()).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
+            var destinationBuyPrices = (await GetCitadelBuyOrders(destinationOrders)).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
+
+            return new Tuple<Dictionary<int, double>, Dictionary<int, double>>(destinationSellPrices, destinationBuyPrices);
         }
 
-        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrders()
+        private static async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrders(LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders)
         {
-            return (await _destinationOrders.Value).Where(x => x.IsBuyOrder.Value);
+            return (await destinationOrders.Value).Where(x => x.IsBuyOrder.Value);
         }
 
-        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrders()
+        private static async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrders(LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders)
         {
-            return (await _destinationOrders.Value).Where(x => !x.IsBuyOrder.Value);
+            return (await destinationOrders.Value).Where(x => !x.IsBuyOrder.Value);
         }
 
         private double GetSellPriceForItemAtDestination(int itemId)

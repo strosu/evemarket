@@ -13,7 +13,7 @@ namespace EveIndustry.Models
 
         public int Amount { get; set; }
 
-        public double BestPrice => _obtainingStrategies.Max(x => x.GetPrice);
+        public double BestPrice => _obtainingStrategies.Min(x => x.GetPrice);
 
         public List<Item> Components { get; set; }
 
