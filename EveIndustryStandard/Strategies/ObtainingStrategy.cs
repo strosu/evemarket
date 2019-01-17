@@ -15,14 +15,13 @@ namespace EveIndustry.Strategies
 
         public double GetPrice { get; private set; }
 
-        protected abstract Task<double?> ComputePrice();
+        protected abstract Task<double> ComputePrice();
 
         public abstract void PrintObtainingMethod(int amount);
 
         public async Task ComputeFinalPrice()
         {
-            var price = await ComputePrice();
-            GetPrice = price ?? double.MaxValue;
+            GetPrice = await ComputePrice();
         }
     }
 
@@ -32,9 +31,9 @@ namespace EveIndustry.Strategies
         {
         }
 
-        protected override Task<double?> ComputePrice()
+        protected override Task<double> ComputePrice()
         {
-            return null;
+            return Task.FromResult(double.MaxValue);
         }
 
         public override void PrintObtainingMethod(int amount)

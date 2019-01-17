@@ -151,14 +151,14 @@ namespace EveIndustryStandard.Managers
         //    return zz;
         //}
 
-        public async Task<Item> ComputePrice2(int itemId, int buyRegion, int buySystemId)
+        public async Task<Item> ComputePrice2(int itemId, int amount, int buyRegion, int buySystemId)
         {
             if (_itemCache.ContainsKey(itemId))
             {
                 return _itemCache[itemId];
             }
 
-            var zz = _itemFactory.Build(itemId);
+            var zz = _itemFactory.Build(itemId, amount);
 
             _itemCache.Add(itemId, zz);
 
@@ -176,10 +176,10 @@ namespace EveIndustryStandard.Managers
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
 
             // home
-            var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
+            // var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
 
             // work
-            //var filePath = @"C:\work\git\evemarket\EveIndustryStandard\Resources\onedq.json";
+            var filePath = @"C:\work\git\evemarket\EveIndustryStandard\Resources\onedq.json";
             LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders;
 
             if (refreshCitadelData)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EveIndustry.Strategies;
 using EveIndustryStandard.Managers;
+using EveIndustryStandard.Strategies;
 
 namespace EveIndustry.Models
 {
@@ -15,7 +16,7 @@ namespace EveIndustry.Models
 
         public double BestPrice => _obtainingStrategies.Min(x => x.GetPrice);
 
-        public List<Item> Components { get; set; }
+        // public List<Item> Components { get; set; }
 
         private readonly List<ObtainingStrategy> _obtainingStrategies  = new List<ObtainingStrategy>();
 
@@ -25,9 +26,9 @@ namespace EveIndustry.Models
             return this;
         }
 
-        public Item WithOneDqBuildStrategy(BlueprintCopy bpc)
+        public Item WithOneDqBuildStrategy(BlueprintCopy bpc, ItemFactory itemFactory)
         {
-            _obtainingStrategies.Add(BuildLocalStrategy.Build(this, bpc));
+            _obtainingStrategies.Add(BuildLocalStrategy.Build(this, bpc, itemFactory));
             return this;
         }
 

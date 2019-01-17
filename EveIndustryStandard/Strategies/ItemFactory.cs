@@ -19,7 +19,7 @@ namespace EveIndustryStandard.Strategies
             _destinationBuyPrices = destinationBuyPrices;
         }
 
-        public Item Build(int itemId)
+        public Item Build(int itemId, int amount)
         {
             var itemName = _marketItems[itemId].Name;
             var bpcItemId = GetBpcItemId(itemName);
@@ -28,9 +28,9 @@ namespace EveIndustryStandard.Strategies
             return new Item()
                 {
                     Id = itemId,
-                    Amount = 1
+                    Amount = amount
                 }
-                .WithOneDqBuildStrategy(bpc)
+                .WithOneDqBuildStrategy(bpc, this)
                 .WithOneDqBuyStategy(_destinationSellPrices)
                 .Build();
         }

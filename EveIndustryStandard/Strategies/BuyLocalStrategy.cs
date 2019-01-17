@@ -16,7 +16,7 @@ namespace EveIndustry.Strategies
 
         public static ObtainingStrategy Build(Item item, Dictionary<int, double> localSellOders)
         {
-            if (GetSellPriceForItemAtDestination(item.Id, localSellOders) == null)
+            if (GetSellPriceForItemAtDestination(item.Id, localSellOders) == Double.MaxValue)
             {
                 return new NullObtainingStrategy(item);
             }
@@ -24,7 +24,7 @@ namespace EveIndustry.Strategies
             return new BuyLocalStrategy(item, localSellOders);
         }
 
-        protected override Task<double?> ComputePrice()
+        protected override Task<double> ComputePrice()
         {
             return Task.FromResult(GetSellPriceForItemAtDestination(_item.Id, _localSellOders) * _item.Amount);
         }
@@ -34,9 +34,9 @@ namespace EveIndustry.Strategies
             Console.WriteLine($"Buying {0} pieces of {_item.Id} in 1DQ");
         }
 
-        private static double? GetSellPriceForItemAtDestination(int itemId, Dictionary<int, double> localSellOders)
+        private static double GetSellPriceForItemAtDestination(int itemId, Dictionary<int, double> localSellOders)
         {
-            return localSellOders.ContainsKey(itemId) ? (double?)localSellOders[itemId] : null;
+            return localSellOders.ContainsKey(itemId) ? localSellOders[itemId] : double.MaxValue;
         }
     }
 }
