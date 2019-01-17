@@ -55,6 +55,7 @@
     <Compile Include="Client\ClientManager.cs" />
     <Compile Include="Helpers\DictionaryHelpers.cs" />
     <Compile Include="Managers\BlueprintManager.cs" />
+    <Compile Include="Managers\CitadelOrdersManager.cs" />
     <Compile Include="Managers\IndustryManager.cs" />
     <Compile Include="Managers\ItemBuilder.cs" />
     <Compile Include="Managers\ItemManager.cs" />

@@ -15,7 +15,7 @@ namespace EveIndustryStandard.Managers
         {
             var baseJobCost = components.Sum(x => GetAdjustedPrice(x.Id) * x.Amount);
 
-            var currentSystemIndex = 0.0591;
+            var currentSystemIndex = 0.0644; // Read dynamically later
             var systemsCostIndex = 0.96 * currentSystemIndex;
             var jobFee = baseJobCost * systemsCostIndex;
 
