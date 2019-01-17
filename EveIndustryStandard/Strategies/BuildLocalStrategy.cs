@@ -33,13 +33,13 @@ namespace EveIndustry.Strategies
         {
             var installCost = GetInstallCost() * _item.Amount;
 
-            List<Item> components = new List<Item>();
+            _item.Components = new List<Item>();
             foreach (var comp in _bpc.UnresearchedRequiredComponentsForSingleRun)
             {
-                components.Add(_itemFactory.Build(comp.Id, comp.Amount));
+                _item.Components.Add(_itemFactory.Build(comp.Id, comp.Amount));
             }
 
-            return Task.FromResult((double)installCost + components.Sum(x => x.BestPrice));
+            return Task.FromResult(installCost + _item.Components.Sum(x => x.BestPrice));
         }
 
         private double GetInstallCost()

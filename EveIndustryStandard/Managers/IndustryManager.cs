@@ -35,7 +35,7 @@ namespace EveIndustryStandard.Managers
             _marketItems = ItemManager.GetMarketItems();
             _bpcs = BlueprintManager.GetBlueprints();
             _marketApi = marketApi;
-            _itemFactory = new ItemFactory(_marketItems, _bpcs, destinationBuyPrices, destinationSellPrices);
+            _itemFactory = new ItemFactory(_marketItems, _bpcs, destinationSellPrices, destinationBuyPrices);
         }
 
         public static async Task<IndustryManager> Create(bool refreshCitadelData)

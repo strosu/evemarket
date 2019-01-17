@@ -1,10 +1,8 @@
-﻿using System;
+﻿using EveIndustry.Strategies;
+using EveIndustryStandard.Strategies;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EveIndustry.Strategies;
-using EveIndustryStandard.Managers;
-using EveIndustryStandard.Strategies;
 
 namespace EveIndustry.Models
 {
@@ -16,7 +14,7 @@ namespace EveIndustry.Models
 
         public double BestPrice => _obtainingStrategies.Min(x => x.GetPrice);
 
-        // public List<Item> Components { get; set; }
+        public List<Item> Components { get; set; }
 
         private readonly List<ObtainingStrategy> _obtainingStrategies  = new List<ObtainingStrategy>();
 
