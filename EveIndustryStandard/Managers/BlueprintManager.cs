@@ -8,16 +8,21 @@ namespace EveIndustryStandard.Managers
 {
     public class BlueprintManager
     {
+        private readonly Dictionary<int, BlueprintCopy> _bpcs;
+
+        public BlueprintManager()
+        {
+            _bpcs = GetBlueprints();
+        }
+
         public static Dictionary<int, BlueprintCopy> GetBlueprints()
         {
             var result = new Dictionary<int, BlueprintCopy>();
-            var filePath = @"Resources\industryBlueprints.csv";
-            var filePath2 = @"Resources\industryActivityMaterials.csv";
 
             var maxRunsDictionary = new Dictionary<int, int>();
             var materialsDictionary = new Dictionary<int, List<Tuple<int, int>>>();
 
-            using (TextFieldParser parser = new TextFieldParser(filePath))
+            using (TextFieldParser parser = new TextFieldParser(@"Resources\industryBlueprints.csv"))
             {
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
@@ -32,7 +37,7 @@ namespace EveIndustryStandard.Managers
                 }
             }
 
-            using (TextFieldParser parser = new TextFieldParser(filePath2))
+            using (TextFieldParser parser = new TextFieldParser(@"Resources\industryActivityMaterials.csv"))
             {
                 parser.TextFieldType = FieldType.Delimited;
                 parser.SetDelimiters(",");
@@ -73,6 +78,12 @@ namespace EveIndustryStandard.Managers
             }
 
             return result;
+        }
+
+        private int GetRequiredComponents(int bpcId, int componentTypeId)
+        {
+            var multiplier = 0.853578;
+            return (int)Math.Ceiling(_bpcs[bpcId].UnresearchedRequiredComponentsForSingleRun.FirstOrDefault(x => x.Id == componentTypeId).Amount * multiplier);
         }
     }
 }

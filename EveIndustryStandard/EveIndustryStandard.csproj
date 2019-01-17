@@ -53,12 +53,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\ClientManager.cs" />
+    <Compile Include="Helpers\DictionaryHelpers.cs" />
     <Compile Include="Managers\BlueprintManager.cs" />
     <Compile Include="Managers\IndustryManager.cs" />
     <Compile Include="Managers\ItemBuilder.cs" />
     <Compile Include="Managers\ItemManager.cs" />
     <Compile Include="LazyAsync.cs" />
     <Compile Include="Managers\MaterialsManager.cs" />
+    <Compile Include="Managers\SellableManager.cs" />
     <Compile Include="Models\BlueprintCopy.cs" />
     <Compile Include="Models\CharInfo.cs" />
     <Compile Include="Models\Item.cs" />
@@ -68,11 +70,12 @@
     <Compile Include="Models\UserToken.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Strategies\BuildLocalItemStrategy.cs" />
-    <Compile Include="Strategies\BuildLocalOneItemStrategy.cs" />
-    <Compile Include="Strategies\BuyLocalStrategy.cs" />
     <Compile Include="Strategies\ItemFactory.cs" />
-    <Compile Include="Strategies\ObtainingStrategy.cs" />
+    <Compile Include="Strategies\Obtaining\BuildLocalOneItemStrategy.cs" />
+    <Compile Include="Strategies\Obtaining\BuyLocalStrategy.cs" />
+    <Compile Include="Strategies\Obtaining\ObtainingStrategy.cs" />
+    <Compile Include="Strategies\Offloading\LocalOffloadingStrategy.cs" />
+    <Compile Include="Strategies\Offloading\OffloadingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

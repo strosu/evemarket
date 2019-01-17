@@ -1,115 +1,65 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using EveClientStandard.Extensions;
-using EveIndustry;
-using EveIndustry.Client;
+﻿using EveIndustry.Client;
 using EveIndustry.Models;
 using EveIndustryStandard.Strategies;
 using IO.Swagger.Api;
-using IO.Swagger.Model;
-using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EveIndustryStandard.Managers
 {
     public class IndustryManager
     {
-        private CharInfo _charInfo;
-        private MarketApi _marketApi;
-        private Dictionary<int, MarketItem> _marketItems;
-        private Dictionary<int, BlueprintCopy> _bpcs;
-        private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
-        private Dictionary<int, double> _destinationBuyPrices = new Dictionary<int, double>();
-        private Dictionary<int, double> _destinationSellPrices = new Dictionary<int, double>();
-        private Dictionary<int, ItemPrice> _itemPriceCache = new Dictionary<int, ItemPrice>();
-        private Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
-        private ItemFactory _itemFactory;
-
-        private List<int> _highValueItems = new List<int>();
-
+        private readonly Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
+        private readonly ItemFactory _itemFactory;
+        
         private IndustryManager(Dictionary<int, double> destinationBuyPrices, Dictionary<int, double> destinationSellPrices, MarketApi marketApi)
         {
-            _marketItems = ItemManager.GetMarketItems();
-            _bpcs = BlueprintManager.GetBlueprints();
-            _marketApi = marketApi;
-            _itemFactory = new ItemFactory(_marketItems, _bpcs, destinationSellPrices, destinationBuyPrices);
+            _itemFactory = new ItemFactory(ItemManager.GetMarketItems(), BlueprintManager.GetBlueprints(), destinationSellPrices, destinationBuyPrices);
         }
 
         public static async Task<IndustryManager> Create(bool refreshCitadelData)
         {
             await ClientManager.Build();
             var marketApi = new MarketApi();
-            var orders = await InitializeCitadelOrders(refreshCitadelData, marketApi);
+            var orders = await CitadelOrdersManager.InitializeCitadelOrders(refreshCitadelData, marketApi);
             var manager = new IndustryManager(orders.Item2, orders.Item1, marketApi);
             return manager;
         }
 
-        #region sellable - move
-
-        public async Task GetPotentialItems(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
+        public Item ComputePrice2(int itemId, int amount, int buyRegion, int buySystemId)
         {
-            var sellable = await GetSellableItems(regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay);
-        }
-
-        private async Task<ConcurrentBag<MarketItem>> GetSellableItems(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
-        {
-            var result = new ConcurrentBag<MarketItem>();
-
-            var tasks = _marketItems.Select(async item =>
+            if (_itemCache.ContainsKey(itemId))
             {
-                if (await HasMarket(item.Value, regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay))
-                {
-                    result.Add(item.Value);
-                };
-            });
-
-            await Task.WhenAll(tasks);
-            return result;
-        }
-
-        private async Task<bool> HasMarket(MarketItem marketItem, int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
-        {
-            try
-            {
-                var orders = (await _marketApi.GetMarketsRegionIdHistoryAsync(regionId, marketItem.Id)).OrderByDescending(x => x.Date)
-                    .Take(daysToEvaluate).ToList();
-
-                return AreConsecutiveDays(orders, daysToEvaluate)
-                       && GetAverageDailyRevenue(orders) >= minAverageVolumePerDay
-                       && HasMinNumberOfOrders(orders, minOrdersPerDay);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private static bool HasMinNumberOfOrders(List<GetMarketsRegionIdHistory200Ok> orders, int minOrdersPerDay)
-        {
-            return orders.Average(x => x.OrderCount).Value >= minOrdersPerDay;
-        }
-
-        private static bool AreConsecutiveDays(List<GetMarketsRegionIdHistory200Ok> orders, int daysToEvaluate)
-        {
-            if (orders.Count < daysToEvaluate)
-            {
-                return false;
+                return _itemCache[itemId];
             }
 
-            var tmp = orders.First().Date - orders.Last().Date;
+            var currentItem = _itemFactory.Build(itemId, amount);
 
-            return tmp.Value.TotalDays == daysToEvaluate;
+            _itemCache.Add(itemId, currentItem);
+
+            return currentItem;
         }
+        
+        //private double GetSellPriceForItemAtDestination(int itemId)
+        //{
+        //    return _destinationSellPrices.ContainsKey(itemId) ? _destinationSellPrices[itemId] : double.MaxValue;
+        //}
 
-        private static double GetAverageDailyRevenue(List<GetMarketsRegionIdHistory200Ok> orders)
-        {
-            return orders.Select(x => x.Average * x.Volume).Average().Value;
-        }
+        //private double GetBuyPriceForItemAtDestination(int itemId)
+        //{
+        //    return _destinationBuyPrices.ContainsKey(itemId) ? _destinationBuyPrices[itemId] : double.MaxValue;
+        //}
 
-        #endregion
+        //private async Task<double> GetPriceForItemInRegion(int itemId, int regionId, int systemId)
+        //{
+        //    var sellOrders = await ApiExtension.GetAll(index =>
+        //        _marketApi.GetMarketsRegionIdOrdersAsyncWithHttpInfo("sell", regionId, "tranquility", typeId: itemId, page: index));
+
+        //    // var sellOrders = await GetAllOrders(itemId, regionId);
+        //    var minPrice = sellOrders.Where(x => x.SystemId == systemId).OrderBy(x => x.Price).FirstOrDefault();
+        //    var price = minPrice?.Price ?? double.MaxValue;
+        //    return price;
+        //}
 
         //public async Task<List<ItemPrice>> ComputeCurrentPrices(int buyRegionId)
         //{
@@ -150,92 +100,5 @@ namespace EveIndustryStandard.Managers
 
         //    return zz;
         //}
-
-        public async Task<Item> ComputePrice2(int itemId, int amount, int buyRegion, int buySystemId)
-        {
-            if (_itemCache.ContainsKey(itemId))
-            {
-                return _itemCache[itemId];
-            }
-
-            var zz = _itemFactory.Build(itemId, amount);
-
-            _itemCache.Add(itemId, zz);
-
-            return zz;
-        }
-
-        private int GetRequiredComponents(int bpcId, int componentTypeId)
-        {
-            var multiplier = 0.853578;
-            return (int)Math.Ceiling(_bpcs[bpcId].UnresearchedRequiredComponentsForSingleRun.FirstOrDefault(x => x.Id == componentTypeId).Amount * multiplier);
-        }
-
-        private static async Task<Tuple<Dictionary<int, double>, Dictionary<int, double>>> InitializeCitadelOrders(bool refreshCitadelData, MarketApi marketApi)
-        {
-            // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
-
-            // home
-            // var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
-
-            // work
-            var filePath = @"C:\work\git\evemarket\EveIndustryStandard\Resources\onedq.json";
-            LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders;
-
-            if (refreshCitadelData)
-            {
-                destinationOrders =
-                    new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
-                        index => marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(await destinationOrders.Value));
-            }
-
-            using (StreamReader file = File.OpenText(filePath))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-
-                destinationOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
-                    (List<GetMarketsStructuresStructureId200Ok>)serializer.Deserialize(file, typeof(List<GetMarketsStructuresStructureId200Ok>)));
-                var tmp = await destinationOrders.Value;
-            }
-
-            var destinationSellPrices =
-                (await GetCitadelSellOrders(destinationOrders)).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
-
-            var destinationBuyPrices = (await GetCitadelBuyOrders(destinationOrders)).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
-
-            return new Tuple<Dictionary<int, double>, Dictionary<int, double>>(destinationSellPrices, destinationBuyPrices);
-        }
-
-        private static async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrders(LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders)
-        {
-            return (await destinationOrders.Value).Where(x => x.IsBuyOrder.Value);
-        }
-
-        private static async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrders(LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders)
-        {
-            return (await destinationOrders.Value).Where(x => !x.IsBuyOrder.Value);
-        }
-
-        private double GetSellPriceForItemAtDestination(int itemId)
-        {
-            return _destinationSellPrices.ContainsKey(itemId) ? _destinationSellPrices[itemId] : double.MaxValue;
-        }
-
-        private double GetBuyPriceForItemAtDestination(int itemId)
-        {
-            return _destinationBuyPrices.ContainsKey(itemId) ? _destinationBuyPrices[itemId] : double.MaxValue;
-        }
-
-        private async Task<double> GetPriceForItemInRegion(int itemId, int regionId, int systemId)
-        {
-            var sellOrders = await ApiExtension.GetAll(index =>
-                _marketApi.GetMarketsRegionIdOrdersAsyncWithHttpInfo("sell", regionId, "tranquility", typeId: itemId, page: index));
-
-            // var sellOrders = await GetAllOrders(itemId, regionId);
-            var minPrice = sellOrders.Where(x => x.SystemId == systemId).OrderBy(x => x.Price).FirstOrDefault();
-            var price = minPrice?.Price ?? double.MaxValue;
-            return price;
-        }
     }
 }

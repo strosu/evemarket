@@ -31,7 +31,7 @@ namespace EveIndustryStandard.Strategies
                     Amount = amount
                 }
                 .WithOneDqBuildStrategy(bpc, this)
-                .WithOneDqBuyStategy(_destinationSellPrices)
+                .WithOneDqBuyStrategy(_destinationSellPrices)
                 .Build();
         }
 

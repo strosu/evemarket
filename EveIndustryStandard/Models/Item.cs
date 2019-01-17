@@ -18,7 +18,7 @@ namespace EveIndustry.Models
 
         private readonly List<ObtainingStrategy> _obtainingStrategies  = new List<ObtainingStrategy>();
 
-        public Item WithOneDqBuyStategy(Dictionary<int, double> localPrices)
+        public Item WithOneDqBuyStrategy(Dictionary<int, double> localPrices)
         {
             _obtainingStrategies.Add(BuyLocalStrategy.Build(this, localPrices));
             return this;
