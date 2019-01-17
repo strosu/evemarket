@@ -11,9 +11,8 @@ namespace EveIndustryStandard.Managers
     {
         private static readonly Dictionary<int?, double?> AdjustedPrices = GetAdjustedPrices();
 
-        public static double GetInstallCost(BlueprintCopy bpc)
+        public static double GetInstallCost(List<Component> components)
         {
-            var components = bpc.UnresearchedRequiredComponentsForSingleRun;
             var baseJobCost = components.Sum(x => GetAdjustedPrice(x.Id) * x.Amount);
 
             var currentSystemIndex = 0.0591;

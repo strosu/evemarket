@@ -68,7 +68,8 @@
     <Compile Include="Models\UserToken.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Strategies\BuildLocalStrategy.cs" />
+    <Compile Include="Strategies\BuildLocalItemStrategy.cs" />
+    <Compile Include="Strategies\BuildLocalOneItemStrategy.cs" />
     <Compile Include="Strategies\BuyLocalStrategy.cs" />
     <Compile Include="Strategies\ItemFactory.cs" />
     <Compile Include="Strategies\ObtainingStrategy.cs" />

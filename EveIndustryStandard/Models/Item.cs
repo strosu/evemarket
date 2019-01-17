@@ -26,7 +26,7 @@ namespace EveIndustry.Models
 
         public Item WithOneDqBuildStrategy(BlueprintCopy bpc, ItemFactory itemFactory)
         {
-            _obtainingStrategies.Add(BuildLocalStrategy.Build(this, bpc, itemFactory));
+            _obtainingStrategies.Add(BuildLocalOneItemStrategy.Build(this, bpc, itemFactory));
             return this;
         }
 

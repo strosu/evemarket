@@ -8,25 +8,27 @@ using EveIndustryStandard.Strategies;
 
 namespace EveIndustry.Strategies
 {
-    public class BuildLocalStrategy : ObtainingStrategy
+    public class BuildLocalItemStrategy : ObtainingStrategy
     {
         private readonly BlueprintCopy _bpc;
         private readonly ItemFactory _itemFactory;
+        private readonly List<Component> _components;
 
-        private BuildLocalStrategy(Item item, BlueprintCopy bpc, ItemFactory itemItemFactory) : base(item)
+        private BuildLocalItemStrategy(Item item, BlueprintCopy bpc, ItemFactory itemItemFactory, List<Component> components) : base(item)
         {
             _bpc = bpc;
             _itemFactory = itemItemFactory;
+            _components = components;
         }
 
-        public static ObtainingStrategy Build(Item item, BlueprintCopy bpc, ItemFactory itemFactory)
+        public static ObtainingStrategy Build(Item item, BlueprintCopy bpc, ItemFactory itemFactory, List<Component> components)
         {
             if (bpc == null)
             {
                 return new NullObtainingStrategy(item);
             }
 
-            return new BuildLocalStrategy(item, bpc, itemFactory);
+            return new BuildLocalItemStrategy(item, bpc, itemFactory, components);
         }
 
         protected override Task<double> ComputePrice()
@@ -34,7 +36,7 @@ namespace EveIndustry.Strategies
             var installCost = GetInstallCost() * _item.Amount;
 
             _item.Components = new List<Item>();
-            foreach (var comp in _bpc.UnresearchedRequiredComponentsForSingleRun)
+            foreach (var comp in _components)
             {
                 _item.Components.Add(_itemFactory.Build(comp.Id, comp.Amount));
             }
@@ -44,7 +46,7 @@ namespace EveIndustry.Strategies
 
         private double GetInstallCost()
         {
-            return MaterialsManager.GetInstallCost(_bpc);
+            return MaterialsManager.GetInstallCost(_components);
         }
 
         public override void PrintObtainingMethod(int amount)

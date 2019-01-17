@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EveIndustry.Helpers;
 using EveIndustry.Models;
 
 namespace EveIndustry.Strategies
 {
     public class BuyLocalStrategy : ObtainingStrategy
     {
-        private readonly Dictionary<int, double> _localSellOders;
+        private readonly Dictionary<int, double> _localSellOrders;
 
-        private BuyLocalStrategy(Item item, Dictionary<int, double> localSellOders) : base(item)
+        private BuyLocalStrategy(Item item, Dictionary<int, double> localSellOrders) : base(item)
         {
-            _localSellOders = localSellOders;
+            _localSellOrders = localSellOrders;
         }
 
         public static ObtainingStrategy Build(Item item, Dictionary<int, double> localSellOders)
         {
-            if (GetSellPriceForItemAtDestination(item.Id, localSellOders) == Double.MaxValue)
+            if (DictionaryHelpers.GetSellPriceForItemOrMax(item.Id, localSellOders).IsMaxValue())
             {
                 return new NullObtainingStrategy(item);
             }
@@ -26,17 +27,12 @@ namespace EveIndustry.Strategies
 
         protected override Task<double> ComputePrice()
         {
-            return Task.FromResult(GetSellPriceForItemAtDestination(_item.Id, _localSellOders) * _item.Amount);
+            return Task.FromResult(DictionaryHelpers.GetSellPriceForItemOrMax(_item.Id, _localSellOrders) * _item.Amount);
         }
 
         public override void PrintObtainingMethod(int amount)
         {
             Console.WriteLine($"Buying {0} pieces of {_item.Id} in 1DQ");
-        }
-
-        private static double GetSellPriceForItemAtDestination(int itemId, Dictionary<int, double> localSellOders)
-        {
-            return localSellOders.ContainsKey(itemId) ? localSellOders[itemId] : double.MaxValue;
         }
     }
 }
