@@ -30,7 +30,7 @@ namespace EveIndustry.Strategies
                 return new NullObtainingStrategy(item);
             }
 
-            return new BuildLocalOneItemStrategy(item, itemFactory, blueprintService.GetComponents(item.Id, item.Amount, 0.9));
+            return new BuildLocalOneItemStrategy(item, itemFactory, blueprintService.GetComponentsWithMultipleRuns(item.Id, item.Amount, 0.9));
         }
 
         protected override Task<double> ComputePrice()
@@ -43,7 +43,7 @@ namespace EveIndustry.Strategies
                 _item.Components.Add(_itemFactory.Build(comp.Id, comp.Amount));
             }
 
-            ComponentsCost = _item.Components.Sum(x => x.BestPrice);
+            ComponentsCost = _item.Components.Sum(x => x.BestBuyingPrice);
 
 
             return Task.FromResult(InstallCost + ComponentsCost);
@@ -54,9 +54,13 @@ namespace EveIndustry.Strategies
             return MaterialsManager.GetInstallCost(_components);
         }
 
-        public override void PrintObtainingMethod(int amount)
+        public override void PrintObtainingMethod()
         {
-            Console.WriteLine($"Building {amount} locally for item {_item.Id}");
+            Console.WriteLine($"Building {_item.Amount} locally for item {_item.ItemName} - {_item.Id}");
+            foreach (var comp in _item.Components)
+            {
+                comp.BestObtainingStrategy.PrintObtainingMethod();
+            }
         }
     }
 }

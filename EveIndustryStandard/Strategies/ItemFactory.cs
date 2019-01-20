@@ -1,5 +1,4 @@
 ﻿using EveIndustry.Models;
-using System.Collections.Generic;
 using EveIndustryStandard.Managers;
 using EveIndustryStandard.Services;
 
@@ -9,11 +8,13 @@ namespace EveIndustryStandard.Strategies
     {
         private readonly CitadelOrdersManager _citadelOrdersManager;
         private readonly BlueprintService _blueprintService;
+        private readonly ItemManager _itemManager;
 
-        public ItemFactory(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService)
+        public ItemFactory(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, ItemManager itemManager)
         {
             _citadelOrdersManager = citadelOrdersManager;
             _blueprintService = blueprintService;
+            _itemManager = itemManager;
         }
 
         public Item Build(int itemId, int amount)
@@ -21,7 +22,8 @@ namespace EveIndustryStandard.Strategies
             return new Item()
                 {
                     Id = itemId,
-                    Amount = amount
+                    Amount = amount,
+                    ItemName = _itemManager.GetItemName(itemId)
                 }
                 .WithOneDqBuildStrategy(this, _blueprintService)
                 .WithOneDqBuyStrategy(_citadelOrdersManager.DestinationSellPrices)

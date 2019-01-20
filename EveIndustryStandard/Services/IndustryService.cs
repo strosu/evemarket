@@ -13,9 +13,9 @@ namespace EveIndustryStandard.Services
         private readonly Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
         private readonly ItemFactory _itemFactory;
         
-        private IndustryService(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService)
+        private IndustryService(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, ItemManager itemManager)
         {
-            _itemFactory = new ItemFactory(citadelOrdersManager, blueprintService);
+            _itemFactory = new ItemFactory(citadelOrdersManager, blueprintService, itemManager);
         }
 
         public static async Task<IndustryService> Create(bool refreshCitadelData)
@@ -23,9 +23,18 @@ namespace EveIndustryStandard.Services
             await ClientManager.Build();
             var marketApi = new MarketApi();
             var citadelManager = await CitadelOrdersManager.BuildCitadelManager(marketApi, refreshCitadelData);
-            return new IndustryService(citadelManager, new BlueprintService(new BlueprintManager(), new ItemManager()));
+            var itemManager = new ItemManager();
+            return new IndustryService(citadelManager, new BlueprintService(new BlueprintManager(), itemManager), itemManager);
         }
 
+        /// <summary>
+        /// Entry point for computing prices, strategies etc
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="amount"></param>
+        /// <param name="buyRegion"></param>
+        /// <param name="buySystemId"></param>
+        /// <returns></returns>
         public Item ComputePrice2(int itemId, int amount, int buyRegion, int buySystemId)
         {
             if (_itemCache.ContainsKey(itemId))

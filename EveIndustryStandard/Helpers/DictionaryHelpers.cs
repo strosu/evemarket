@@ -31,7 +31,7 @@ namespace EveIndustryStandard.Helpers
             return dictionary.TryGetValue(key.Value, out var value) ? value : null;
         }
 
-        public static void AddComponents(ICollection<Component> previous, IEnumerable<Component> current)
+        public static void AddComponents(this ICollection<Component> previous, IEnumerable<Component> current)
         {
             foreach (var comp in current)
             {

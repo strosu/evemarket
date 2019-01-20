@@ -30,9 +30,9 @@ namespace EveIndustry.Strategies
             return Task.FromResult(DictionaryHelpers.GetSellPriceForItemOrMax(_item.Id, _localSellOrders) * _item.Amount);
         }
 
-        public override void PrintObtainingMethod(int amount)
+        public override void PrintObtainingMethod()
         {
-            Console.WriteLine($"Buying {0} pieces of {_item.Id} in 1DQ");
+            Console.WriteLine($"Buying {_item.Amount} pieces of {_item.ItemName} - {_item.Id} in 1DQ");
         }
     }
 }

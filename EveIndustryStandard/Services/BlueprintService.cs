@@ -22,7 +22,7 @@ namespace EveIndustryStandard.Services
             return _itemManager.GetBpcIdForItem(itemId) != null;
         }
 
-        public List<Component> GetComponents(int itemId, int amount, double bpcMaterialModifier)
+        public List<Component> GetComponentsWithMultipleRuns(int itemId, int amount, double bpcMaterialModifier)
         {
             var requiredComponents = new List<Component>();
             var bpcId = _itemManager.GetBpcIdForItem(itemId);
@@ -38,10 +38,10 @@ namespace EveIndustryStandard.Services
 
             for (var i = 0; i < fullRuns; i++)
             {
-                DictionaryHelpers.AddComponents(requiredComponents, ConcreteGetComponents(bpc.MaxRuns, bpcMaterialModifier, bpc));
+                requiredComponents.AddComponents(ConcreteGetComponents(bpc.MaxRuns, bpcMaterialModifier, bpc));
             }
 
-            DictionaryHelpers.AddComponents(requiredComponents, ConcreteGetComponents(runsPartial, bpcMaterialModifier, bpc));
+            requiredComponents.AddComponents(ConcreteGetComponents(runsPartial, bpcMaterialModifier, bpc));
 
             return requiredComponents;
         }

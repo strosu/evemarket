@@ -13,11 +13,21 @@ namespace EveIndustry.Models
 
         public int Amount { get; set; }
 
-        public double BestPrice => _obtainingStrategies.Min(x => x.GetPrice);
+        public string ItemName { get; set; }
+
+        public double BestBuyingPrice => BestObtainingStrategy.GetPrice;
+        public double BestSellingPrice => BestOffloadingStrategy.GetPrice;
+
+        public ObtainingStrategy BestObtainingStrategy =>
+            _obtainingStrategies.Aggregate((i1, i2) => i1.GetPrice < i2.GetPrice ? i1 : i2);
+
+        public OffloadingStrategy BestOffloadingStrategy =>
+            _offLoadingStrategies.Aggregate((i1, i2) => i1.GetPrice > i2.GetPrice ? i1 : i2);
 
         public List<Item> Components { get; set; }
 
         private readonly List<ObtainingStrategy> _obtainingStrategies  = new List<ObtainingStrategy>();
+        private readonly List<OffloadingStrategy> _offLoadingStrategies  = new List<OffloadingStrategy>();
 
         public Item WithOneDqBuyStrategy(Dictionary<int, double> localPrices)
         {

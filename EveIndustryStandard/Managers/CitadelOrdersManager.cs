@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using EveClientStandard.Extensions;
+﻿using EveClientStandard.Extensions;
 using EveIndustry;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EveIndustryStandard.Managers
 {
     public class CitadelOrdersManager
     {
         private readonly MarketApi _marketApi;
-        public Dictionary<int, double> DestinationSellPrices { get; private set; }= new Dictionary<int, double>();
-        public Dictionary<int, double> DestinationBuyPrices { get; private set; }= new Dictionary<int, double>();
+        public Dictionary<int, double> DestinationSellPrices { get; private set; } = new Dictionary<int, double>();
+        public Dictionary<int, double> DestinationBuyPrices { get; private set; } = new Dictionary<int, double>();
         private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
 
         private CitadelOrdersManager(MarketApi marketApi)
@@ -31,9 +30,9 @@ namespace EveIndustryStandard.Managers
             return result;
         }
 
-        public async Task InitializeCitadelOrders(bool refreshCitadelData)
+        private async Task InitializeCitadelOrders(bool refreshCitadelData)
         {
-            
+            await GetOrders(refreshCitadelData);
 
             DestinationSellPrices =
                 (await GetCitadelSellOrders()).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));

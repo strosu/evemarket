@@ -23,13 +23,16 @@ namespace EveIndustry
             var minOrdersPerDay = int.Parse(ConfigurationManager.AppSettings["MinOrdersPerDay"]);
             var refreshCitadelData = bool.Parse(ConfigurationManager.AppSettings["RefreshCitadelData"]);
 
+            int amount = 50;
             var manager = await IndustryService.Create(refreshCitadelData);
             // var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
-            var result2 = manager.ComputePrice2(23055, 50, sourceRegionId, 30000142);
+            var result2 = manager.ComputePrice2(23055, amount, sourceRegionId, 30000142);
             //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
             //var resultNyx = await manager.ComputePrice(23913, sourceRegionId, 30000142); 
             // var currentPrices = await manager.ComputeCurrentPrices(sourceRegionId, regionId);
             //await manager.GetPotentialItems(regionId, minOrdersPerDay, minAverageVolumePerDay, daysToEvaluate);
+
+            result2.BestObtainingStrategy.PrintObtainingMethod();
 
             Console.ReadLine();
             Console.WriteLine(result2);

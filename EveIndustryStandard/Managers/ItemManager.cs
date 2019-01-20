@@ -8,7 +8,7 @@ namespace EveIndustryStandard.Managers
 {
     public class ItemManager
     {
-        private readonly Dictionary<int, MarketItem> _marketItems = new Dictionary<int, MarketItem>();
+        private readonly Dictionary<int, MarketItem> _marketItems;
 
         public ItemManager()
         {
@@ -27,8 +27,13 @@ namespace EveIndustryStandard.Managers
 
         public int? GetBpcIdForItem(int itemId)
         {
-            var itemName = _marketItems[itemId].Name;
+            var itemName = GetItemName(itemId);
             return GetBpcItemId(itemName);
+        }
+
+        public string GetItemName(int itemId)
+        {
+            return _marketItems[itemId].Name;
         }
 
         private int? GetBpcItemId(string itemName)

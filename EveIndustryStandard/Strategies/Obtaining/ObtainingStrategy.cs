@@ -17,7 +17,7 @@ namespace EveIndustry.Strategies
 
         protected abstract Task<double> ComputePrice();
 
-        public abstract void PrintObtainingMethod(int amount);
+        public abstract void PrintObtainingMethod();
 
         public async Task ComputeFinalPrice()
         {
@@ -36,7 +36,7 @@ namespace EveIndustry.Strategies
             return Task.FromResult(double.MaxValue);
         }
 
-        public override void PrintObtainingMethod(int amount)
+        public override void PrintObtainingMethod()
         {
             Console.WriteLine("Cannot be obtained");
         }
