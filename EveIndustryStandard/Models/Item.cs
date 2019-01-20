@@ -3,6 +3,7 @@ using EveIndustryStandard.Strategies;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EveIndustry.Services;
 
 namespace EveIndustry.Models
 {
@@ -24,9 +25,9 @@ namespace EveIndustry.Models
             return this;
         }
 
-        public Item WithOneDqBuildStrategy(BlueprintCopy bpc, ItemFactory itemFactory)
+        public Item WithOneDqBuildStrategy(ItemFactory itemFactory, BlueprintService blueprintService)
         {
-            _obtainingStrategies.Add(BuildLocalOneItemStrategy.Build(this, bpc, itemFactory));
+            _obtainingStrategies.Add(BuildLocalOneItemStrategy.Build(this, itemFactory, blueprintService));
             return this;
         }
 

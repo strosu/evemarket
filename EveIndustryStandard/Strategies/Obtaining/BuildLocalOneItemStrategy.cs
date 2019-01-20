@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EveIndustry.Services;
 using EveIndustryStandard.Managers;
 using EveIndustryStandard.Strategies;
 
@@ -19,14 +20,14 @@ namespace EveIndustry.Strategies
             _components = components;
         }
 
-        public static ObtainingStrategy Build(Item item, BlueprintCopy bpc, ItemFactory itemFactory)
+        public static ObtainingStrategy Build(Item item, ItemFactory itemFactory, BlueprintService blueprintService)
         {
-            if (bpc == null)
+            if (blueprintService.ItemHasBlueprint(item.Id))
             {
                 return new NullObtainingStrategy(item);
             }
 
-            return new BuildLocalOneItemStrategy(item, itemFactory, BlueprintManager.GetComponents(item.Amount, 0.9, bpc));
+            return new BuildLocalOneItemStrategy(item, itemFactory, blueprintService.GetComponents(item.Id, item.Amount, 0.9));
         }
 
         protected override Task<double> ComputePrice()

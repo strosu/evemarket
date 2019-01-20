@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EveIndustry.Helpers;
 using EveIndustry.Models;
+using EveIndustryStandard.Helpers;
 
 namespace EveIndustry.Strategies
 {

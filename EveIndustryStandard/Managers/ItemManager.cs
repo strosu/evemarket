@@ -1,12 +1,42 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using EveIndustry.Models;
+using EveIndustryStandard.Helpers;
 using Microsoft.VisualBasic.FileIO;
 
 namespace EveIndustryStandard.Managers
 {
     public class ItemManager
     {
-        public static Dictionary<int, MarketItem> GetMarketItems()
+        private readonly Dictionary<int, MarketItem> _marketItems = new Dictionary<int, MarketItem>();
+
+        public ItemManager()
+        {
+            _marketItems = GetMarketItems();
+        }
+
+        public MarketItem GetMarketItem(int itemId)
+        {
+            return _marketItems.GetValueOrNull(itemId);
+        }
+
+        public IEnumerable<MarketItem> GetAll()
+        {
+            return _marketItems.Values;
+        }
+
+        public int? GetBpcIdForItem(int itemId)
+        {
+            var itemName = _marketItems[itemId].Name;
+            return GetBpcItemId(itemName);
+        }
+
+        private int? GetBpcItemId(string itemName)
+        {
+            return _marketItems.Values.FirstOrDefault(x => x.Name == itemName + " Blueprint")?.Id;
+        }
+
+        private static Dictionary<int, MarketItem> GetMarketItems()
         {
             var result = new Dictionary<int, MarketItem>();
             var filePath = @"Resources\types.txt";
