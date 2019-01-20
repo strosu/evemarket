@@ -1,15 +1,14 @@
-﻿using EveIndustry.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EveIndustryStandard.Managers;
+using EveIndustryStandard.Models;
 using EveIndustryStandard.Services;
-using EveIndustryStandard.Strategies;
 
-namespace EveIndustry.Strategies
+namespace EveIndustryStandard.Strategies.Obtaining
 {
-    public class BuildLocalOneItemStrategy : ObtainingStrategy
+    public class BuildLocalOneItemStrategy : Strategy
     {
         private readonly ItemFactory _itemFactory;
         private readonly List<Component> _components;
@@ -23,7 +22,7 @@ namespace EveIndustry.Strategies
             _components = components;
         }
 
-        public static ObtainingStrategy Build(Item item, ItemFactory itemFactory, BlueprintService blueprintService)
+        public static Strategy Build(Item item, ItemFactory itemFactory, BlueprintService blueprintService)
         {
             if (!blueprintService.ItemHasBlueprint(item.Id))
             {

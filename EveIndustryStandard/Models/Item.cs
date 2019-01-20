@@ -1,11 +1,11 @@
-﻿using EveIndustry.Strategies;
+﻿using EveIndustryStandard.Services;
 using EveIndustryStandard.Strategies;
+using EveIndustryStandard.Strategies.Obtaining;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EveIndustryStandard.Services;
 
-namespace EveIndustry.Models
+namespace EveIndustryStandard.Models
 {
     public class Item
     {
@@ -18,16 +18,16 @@ namespace EveIndustry.Models
         public double BestBuyingPrice => BestObtainingStrategy.GetPrice;
         public double BestSellingPrice => BestOffloadingStrategy.GetPrice;
 
-        public ObtainingStrategy BestObtainingStrategy =>
+        public Strategy BestObtainingStrategy =>
             _obtainingStrategies.Aggregate((i1, i2) => i1.GetPrice < i2.GetPrice ? i1 : i2);
 
-        public OffloadingStrategy BestOffloadingStrategy =>
+        public Strategy BestOffloadingStrategy =>
             _offLoadingStrategies.Aggregate((i1, i2) => i1.GetPrice > i2.GetPrice ? i1 : i2);
 
         public List<Item> Components { get; set; }
 
-        private readonly List<ObtainingStrategy> _obtainingStrategies  = new List<ObtainingStrategy>();
-        private readonly List<OffloadingStrategy> _offLoadingStrategies  = new List<OffloadingStrategy>();
+        private readonly List<Strategy> _obtainingStrategies  = new List<Strategy>();
+        private readonly List<Strategy> _offLoadingStrategies  = new List<Strategy>();
 
         public Item WithOneDqBuyStrategy(Dictionary<int, double> localPrices)
         {

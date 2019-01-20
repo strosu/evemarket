@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using EveIndustryStandard.Models;
+using System.Collections.Generic;
 using System.Linq;
-using EveIndustry.Models;
 
 namespace EveIndustryStandard.Helpers
 {

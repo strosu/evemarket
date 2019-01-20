@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using EveIndustry.Client;
-using EveIndustry.Models;
-using EveIndustryStandard.Managers;
+﻿using EveIndustryStandard.Managers;
+using EveIndustryStandard.Models;
 using EveIndustryStandard.Strategies;
 using IO.Swagger.Api;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using EveIndustryStandard.Client;
 
 namespace EveIndustryStandard.Services
 {

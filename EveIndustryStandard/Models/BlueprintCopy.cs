@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EveIndustry.Models
+namespace EveIndustryStandard.Models
 {
     public struct Component
     {

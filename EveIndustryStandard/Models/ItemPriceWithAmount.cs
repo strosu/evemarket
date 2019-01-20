@@ -1,4 +1,4 @@
-﻿namespace EveIndustry.Models
+﻿namespace EveIndustryStandard.Models
 {
     public class ItemPriceWithAmount
     {

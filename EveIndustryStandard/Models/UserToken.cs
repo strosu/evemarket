@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace EveIndustry.Models
+namespace EveIndustryStandard.Models
 {
     public class UserToken
     {

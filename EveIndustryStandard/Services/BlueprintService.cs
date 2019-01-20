@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using EveIndustry.Models;
-using EveIndustryStandard.Helpers;
+﻿using EveIndustryStandard.Helpers;
 using EveIndustryStandard.Managers;
+using EveIndustryStandard.Models;
+using System;
+using System.Collections.Generic;
 
 namespace EveIndustryStandard.Services
 {

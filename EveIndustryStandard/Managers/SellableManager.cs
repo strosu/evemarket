@@ -1,10 +1,10 @@
-﻿using System.Collections.Concurrent;
+﻿using EveIndustryStandard.Models;
+using IO.Swagger.Api;
+using IO.Swagger.Model;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EveIndustry.Models;
-using IO.Swagger.Api;
-using IO.Swagger.Model;
 
 namespace EveIndustryStandard.Managers
 {

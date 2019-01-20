@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace EveIndustry.Models
+namespace EveIndustryStandard.Models
 {
     [SuppressMessage("ReSharper", "IdentifierTypo")]
     public class ItemPrice

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EveIndustry.Models
+namespace EveIndustryStandard.Models
 {
     public class CharInfo
     {

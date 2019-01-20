@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace EveIndustry
+namespace EveIndustryStandard.Helpers
 {
     public class LazyAsync<T> : Lazy<Task<T>>
     {

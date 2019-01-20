@@ -1,5 +1,5 @@
-﻿using EveIndustry.Models;
-using EveIndustryStandard.Managers;
+﻿using EveIndustryStandard.Managers;
+using EveIndustryStandard.Models;
 using EveIndustryStandard.Services;
 
 namespace EveIndustryStandard.Strategies

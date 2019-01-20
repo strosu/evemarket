@@ -74,9 +74,10 @@
     <Compile Include="Strategies\ItemFactory.cs" />
     <Compile Include="Strategies\Obtaining\BuildLocalOneItemStrategy.cs" />
     <Compile Include="Strategies\Obtaining\BuyLocalStrategy.cs" />
-    <Compile Include="Strategies\Obtaining\ObtainingStrategy.cs" />
-    <Compile Include="Strategies\Offloading\LocalOffloadingStrategy.cs" />
-    <Compile Include="Strategies\Offloading\OffloadingStrategy.cs" />
+    <Compile Include="Strategies\Obtaining\NullObtainingStrategy.cs" />
+    <Compile Include="Strategies\Strategy.cs" />
+    <Compile Include="Strategies\Offloading\ToLocalSellOffloadingStrategy.cs" />
+    <Compile Include="Strategies\Offloading\NullOffloadingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

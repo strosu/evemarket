@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EveIndustry.Models;
 using EveIndustryStandard.Helpers;
+using EveIndustryStandard.Models;
 
-namespace EveIndustry.Strategies
+namespace EveIndustryStandard.Strategies.Obtaining
 {
-    public class BuyLocalStrategy : ObtainingStrategy
+    public class BuyLocalStrategy : Strategy
     {
         private readonly Dictionary<int, double> _localSellOrders;
 
@@ -15,14 +15,14 @@ namespace EveIndustry.Strategies
             _localSellOrders = localSellOrders;
         }
 
-        public static ObtainingStrategy Build(Item item, Dictionary<int, double> localSellOders)
+        public static Strategy Build(Item item, Dictionary<int, double> localSellOrders)
         {
-            if (DictionaryHelpers.GetSellPriceForItemOrMax(item.Id, localSellOders).IsMaxValue())
+            if (DictionaryHelpers.GetSellPriceForItemOrMax(item.Id, localSellOrders).IsMaxValue())
             {
                 return new NullObtainingStrategy(item);
             }
 
-            return new BuyLocalStrategy(item, localSellOders);
+            return new BuyLocalStrategy(item, localSellOrders);
         }
 
         protected override Task<double> ComputePrice()

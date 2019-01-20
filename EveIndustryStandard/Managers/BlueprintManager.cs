@@ -1,9 +1,9 @@
-﻿using System;
+﻿using EveIndustryStandard.Helpers;
+using EveIndustryStandard.Models;
+using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using EveIndustry.Models;
-using EveIndustryStandard.Helpers;
-using Microsoft.VisualBasic.FileIO;
 
 namespace EveIndustryStandard.Managers
 {

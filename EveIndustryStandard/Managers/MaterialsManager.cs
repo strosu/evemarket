@@ -1,5 +1,5 @@
 ﻿using EveClientStandard.Extensions;
-using EveIndustry.Models;
+using EveIndustryStandard.Models;
 using IO.Swagger.Api;
 using System;
 using System.Collections.Generic;

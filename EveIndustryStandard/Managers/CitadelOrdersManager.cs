@@ -1,5 +1,6 @@
-﻿using EveClientStandard.Extensions;
-using EveIndustry;
+﻿using System;
+using EveClientStandard.Extensions;
+using EveIndustryStandard.Helpers;
 using IO.Swagger.Api;
 using IO.Swagger.Model;
 using Newtonsoft.Json;
@@ -43,7 +44,7 @@ namespace EveIndustryStandard.Managers
         private async Task GetOrders(bool refreshCitadelData)
         {
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
-            var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
+            var filePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\Resources\\onedq.json"));
 
             if (refreshCitadelData)
             {
