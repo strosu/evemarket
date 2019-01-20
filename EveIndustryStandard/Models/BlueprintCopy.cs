@@ -2,7 +2,7 @@
 
 namespace EveIndustry.Models
 {
-    public class Component
+    public struct Component
     {
         public int Id { get; set; }
         public int Amount { get; set; }

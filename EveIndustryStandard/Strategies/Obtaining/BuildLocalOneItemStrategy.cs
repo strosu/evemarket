@@ -26,12 +26,12 @@ namespace EveIndustry.Strategies
                 return new NullObtainingStrategy(item);
             }
 
-            return new BuildLocalOneItemStrategy(item, itemFactory, bpc.UnresearchedRequiredComponentsForSingleRun);
+            return new BuildLocalOneItemStrategy(item, itemFactory, BlueprintManager.GetComponents(item.Amount, 0.9, bpc));
         }
 
         protected override Task<double> ComputePrice()
         {
-            var installCost = GetInstallCost() * _item.Amount;
+            var installCost = GetInstallCost();
 
             _item.Components = new List<Item>();
             foreach (var comp in _components)

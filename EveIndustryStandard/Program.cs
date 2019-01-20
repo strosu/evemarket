@@ -32,6 +32,7 @@ namespace EveIndustry
             //await manager.GetPotentialItems(regionId, minOrdersPerDay, minAverageVolumePerDay, daysToEvaluate);
 
             Console.ReadLine();
+            Console.WriteLine(result2);
         }
     }
 }

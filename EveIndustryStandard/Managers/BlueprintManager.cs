@@ -15,7 +15,7 @@ namespace EveIndustryStandard.Managers
             _bpcs = GetBlueprints();
         }
 
-        public List<Component> GetComponents(int itemId, int amount, double bpcMaterialModifier, BlueprintCopy bpc)
+        public static List<Component> GetComponents(int amount, double bpcMaterialModifier, BlueprintCopy bpc)
         {
             var requiredComponents = new List<Component>();
 
@@ -24,20 +24,20 @@ namespace EveIndustryStandard.Managers
 
             for (int i = 0; i < fullRuns; i++)
             {
-                AddComponents(requiredComponents, ConcreteGetComponents(itemId, bpc.MaxRuns, bpcMaterialModifier, bpc));
+                AddComponents(requiredComponents, ConcreteGetComponents(bpc.MaxRuns, bpcMaterialModifier, bpc));
             }
 
-            AddComponents(requiredComponents, ConcreteGetComponents(itemId, runsPartial, bpcMaterialModifier, bpc));
+            AddComponents(requiredComponents, ConcreteGetComponents(runsPartial, bpcMaterialModifier, bpc));
 
             return requiredComponents;
         }
 
-        private void AddComponents(List<Component> previous, List<Component> current)
+        private static void AddComponents(List<Component> previous, List<Component> current)
         {
             foreach (var comp in current)
             {
                 var prev = previous.FirstOrDefault(x => x.Id == comp.Id);
-                if (prev == null)
+                if (prev.Equals(default(Component)))
                 {
                     previous.Add(comp);
                     continue;
@@ -47,16 +47,20 @@ namespace EveIndustryStandard.Managers
             }
         }
 
-        private List<Component> ConcreteGetComponents(int itemId, int amount, double bpcMaterialModifier, BlueprintCopy bpc)
+        private static List<Component> ConcreteGetComponents(int amount, double bpcMaterialModifier, BlueprintCopy bpc)
         {
-            var multiplier = 0.853578;
-            var baseComponents = bpc.UnresearchedRequiredComponentsForSingleRun.ToList();
-            foreach (var comp in baseComponents)
+            var multiplier = 0.9484200063882373;
+            var currentComponents = new List<Component>();
+            foreach (var comp in bpc.UnresearchedRequiredComponentsForSingleRun)
             {
-                comp.Amount = (int)Math.Max(amount, Math.Ceiling(Math.Round(amount * comp.Amount * bpcMaterialModifier * multiplier, 2)));
+                currentComponents.Add(new Component
+                {
+                    Id = comp.Id,
+                    Amount = (int)Math.Max(amount, Math.Ceiling(Math.Round(amount * comp.Amount * bpcMaterialModifier * multiplier, 2)))
+                });
             }
 
-            return baseComponents;
+            return currentComponents;
         }
 
         // Take itemId => bpc => List<Component> needed => send back to ItemBUilder
