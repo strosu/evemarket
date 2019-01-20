@@ -16,7 +16,7 @@ namespace EveIndustryStandard.Managers
         public static async Task<Tuple<Dictionary<int, double>, Dictionary<int, double>>> InitializeCitadelOrders(bool refreshCitadelData, MarketApi marketApi)
         {
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
-            var filePath = @"Resources\onedq.json";
+            var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
 
             LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders;
 
