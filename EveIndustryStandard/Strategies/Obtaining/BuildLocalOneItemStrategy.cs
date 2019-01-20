@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EveIndustry.Services;
 using EveIndustryStandard.Managers;
+using EveIndustryStandard.Services;
 using EveIndustryStandard.Strategies;
 
 namespace EveIndustry.Strategies

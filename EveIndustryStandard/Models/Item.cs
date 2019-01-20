@@ -3,7 +3,7 @@ using EveIndustryStandard.Strategies;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EveIndustry.Services;
+using EveIndustryStandard.Services;
 
 namespace EveIndustry.Models
 {

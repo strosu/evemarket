@@ -13,46 +13,66 @@ namespace EveIndustryStandard.Managers
 {
     public class CitadelOrdersManager
     {
-        public static async Task<Tuple<Dictionary<int, double>, Dictionary<int, double>>> InitializeCitadelOrders(bool refreshCitadelData, MarketApi marketApi)
+        private readonly MarketApi _marketApi;
+        public Dictionary<int, double> DestinationSellPrices { get; private set; }= new Dictionary<int, double>();
+        public Dictionary<int, double> DestinationBuyPrices { get; private set; }= new Dictionary<int, double>();
+        private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
+
+        private CitadelOrdersManager(MarketApi marketApi)
+        {
+            _marketApi = marketApi;
+        }
+
+        public static async Task<CitadelOrdersManager> BuildCitadelManager(MarketApi marketApi, bool refreshCitadelData)
+        {
+            var result = new CitadelOrdersManager(marketApi);
+            await result.InitializeCitadelOrders(refreshCitadelData);
+
+            return result;
+        }
+
+        public async Task InitializeCitadelOrders(bool refreshCitadelData)
+        {
+            
+
+            DestinationSellPrices =
+                (await GetCitadelSellOrders()).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
+
+            DestinationBuyPrices = (await GetCitadelBuyOrders()).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
+        }
+
+        private async Task GetOrders(bool refreshCitadelData)
         {
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
             var filePath = @"D:\git\EveMarket\EveIndustryStandard\Resources\onedq.json";
 
-            LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders;
-
             if (refreshCitadelData)
             {
-                destinationOrders =
+                _destinationOrders =
                     new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
-                        index => marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(await destinationOrders.Value));
+                        index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(await _destinationOrders.Value));
             }
 
-            using (StreamReader file = File.OpenText(filePath))
+            using (var file = File.OpenText(filePath))
             {
-                JsonSerializer serializer = new JsonSerializer();
+                var serializer = new JsonSerializer();
 
-                destinationOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
-                    (List<GetMarketsStructuresStructureId200Ok>)serializer.Deserialize(file, typeof(List<GetMarketsStructuresStructureId200Ok>)));
-                await destinationOrders.Value;
+                _destinationOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
+                    (List<GetMarketsStructuresStructureId200Ok>) serializer.Deserialize(file,
+                        typeof(List<GetMarketsStructuresStructureId200Ok>)));
+                await _destinationOrders.Value;
             }
-
-            var destinationSellPrices =
-                (await GetCitadelSellOrders(destinationOrders)).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
-
-            var destinationBuyPrices = (await GetCitadelBuyOrders(destinationOrders)).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
-
-            return new Tuple<Dictionary<int, double>, Dictionary<int, double>>(destinationSellPrices, destinationBuyPrices);
         }
 
-        private static async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrders(LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders)
+        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrders()
         {
-            return (await destinationOrders.Value).Where(x => x.IsBuyOrder.Value);
+            return (await _destinationOrders.Value).Where(x => x.IsBuyOrder.Value);
         }
 
-        private static async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrders(LazyAsync<List<GetMarketsStructuresStructureId200Ok>> destinationOrders)
+        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrders()
         {
-            return (await destinationOrders.Value).Where(x => !x.IsBuyOrder.Value);
+            return (await _destinationOrders.Value).Where(x => !x.IsBuyOrder.Value);
         }
     }
 }

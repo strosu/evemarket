@@ -1,10 +1,10 @@
-﻿using EveIndustry.Models;
+﻿using System;
+using System.Collections.Generic;
+using EveIndustry.Models;
 using EveIndustryStandard.Helpers;
 using EveIndustryStandard.Managers;
-using System;
-using System.Collections.Generic;
 
-namespace EveIndustry.Services
+namespace EveIndustryStandard.Services
 {
     public class BlueprintService
     {

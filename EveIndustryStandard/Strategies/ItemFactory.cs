@@ -1,20 +1,18 @@
 ﻿using EveIndustry.Models;
 using System.Collections.Generic;
 using EveIndustryStandard.Managers;
-using EveIndustry.Services;
+using EveIndustryStandard.Services;
 
 namespace EveIndustryStandard.Strategies
 {
     public class ItemFactory
     {
-        private readonly Dictionary<int, double> _destinationSellPrices;
-        private readonly Dictionary<int, double> _destinationBuyPrices;
+        private readonly CitadelOrdersManager _citadelOrdersManager;
         private readonly BlueprintService _blueprintService;
 
-        public ItemFactory(Dictionary<int, double> destinationSellPrices, Dictionary<int, double> destinationBuyPrices, BlueprintService blueprintService)
+        public ItemFactory(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService)
         {
-            _destinationSellPrices = destinationSellPrices;
-            _destinationBuyPrices = destinationBuyPrices;
+            _citadelOrdersManager = citadelOrdersManager;
             _blueprintService = blueprintService;
         }
 
@@ -26,7 +24,7 @@ namespace EveIndustryStandard.Strategies
                     Amount = amount
                 }
                 .WithOneDqBuildStrategy(this, _blueprintService)
-                .WithOneDqBuyStrategy(_destinationSellPrices)
+                .WithOneDqBuyStrategy(_citadelOrdersManager.DestinationSellPrices)
                 .Build();
         }
     }

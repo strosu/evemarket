@@ -1,7 +1,7 @@
-﻿using System;
+﻿using EveIndustryStandard.Services;
+using System;
 using System.Configuration;
 using System.Threading.Tasks;
-using EveIndustryStandard.Managers;
 
 namespace EveIndustry
 {
@@ -23,7 +23,7 @@ namespace EveIndustry
             var minOrdersPerDay = int.Parse(ConfigurationManager.AppSettings["MinOrdersPerDay"]);
             var refreshCitadelData = bool.Parse(ConfigurationManager.AppSettings["RefreshCitadelData"]);
 
-            var manager = await IndustryManager.Create(refreshCitadelData);
+            var manager = await IndustryService.Create(refreshCitadelData);
             // var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
             var result2 = manager.ComputePrice2(23055, 50, sourceRegionId, 30000142);
             //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
