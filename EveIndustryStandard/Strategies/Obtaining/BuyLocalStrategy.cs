@@ -32,7 +32,7 @@ namespace EveIndustryStandard.Strategies.Obtaining
 
         public override void PrintObtainingMethod()
         {
-            Console.WriteLine($"Buying {_item.Amount} pieces of {_item.ItemName} - {_item.Id} in 1DQ");
+            Console.WriteLine($"Buying {_item.Amount} pieces of {_item.ItemName} - {_item.Id} in 1DQ at a price of {GetPrice}");
         }
     }
 }

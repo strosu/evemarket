@@ -10,37 +10,39 @@ namespace EveIndustryStandard.Strategies.Obtaining
 {
     public class BuildLocalOneItemStrategy : Strategy
     {
-        private readonly ItemFactory _itemFactory;
+        private readonly Func<int, int, Task<Item>> _buildFunc;
+        private readonly MaterialsService _materialsService;
         private readonly List<Component> _components;
 
         public double InstallCost { get; private set; }
         public double ComponentsCost { get; private set; }
 
-        private BuildLocalOneItemStrategy(Item item, ItemFactory itemItemFactory, List<Component> components) : base(item)
+        private BuildLocalOneItemStrategy(Item item, Func<int, int, Task<Item>> buildFunc, BlueprintService blueprintService, MaterialsService materialsService) : base(item)
         {
-            _itemFactory = itemItemFactory;
-            _components = components;
+            _buildFunc = buildFunc;
+            _materialsService = materialsService;
+            _components = blueprintService.GetComponentsWithMultipleRuns(item.Id, item.Amount, 0.9);
         }
 
-        public static Strategy Build(Item item, ItemFactory itemFactory, BlueprintService blueprintService)
+        public static Strategy Build(Item item, Func<int, int, Task<Item>> buildFunc, BlueprintService blueprintService, MaterialsService materialsService)
         {
             if (!blueprintService.ItemHasBlueprint(item.Id))
             {
                 return new NullObtainingStrategy(item);
             }
 
-            return new BuildLocalOneItemStrategy(item, itemFactory, blueprintService.GetComponentsWithMultipleRuns(item.Id, item.Amount, 0.9));
+            return new BuildLocalOneItemStrategy(item, buildFunc, blueprintService, materialsService);
         }
 
         protected override async Task<double> ComputePrice()
         {
-            InstallCost = GetInstallCost();
+            InstallCost = _materialsService.GetInstallCost(_components);
 
             _item.Components = new List<Item>();
             var componentTasks = new List<Task<Item>>();
             foreach (var comp in _components)
             {
-                componentTasks.Add(_itemFactory.BuildAsync(comp.Id, comp.Amount));
+                componentTasks.Add(_buildFunc(comp.Id, comp.Amount));
             }
 
             _item.Components = (await Task.WhenAll(componentTasks.ToArray())).ToList();
@@ -49,12 +51,7 @@ namespace EveIndustryStandard.Strategies.Obtaining
 
             return InstallCost + ComponentsCost;
         }
-
-        private double GetInstallCost()
-        {
-            return MaterialsManager.GetInstallCost(_components);
-        }
-
+        
         public override void PrintObtainingMethod()
         {
             Console.WriteLine($"Building {_item.Amount} locally for item {_item.ItemName} - {_item.Id}. " +

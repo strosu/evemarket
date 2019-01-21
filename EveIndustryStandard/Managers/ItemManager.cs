@@ -41,7 +41,7 @@ namespace EveIndustryStandard.Managers
             return _marketItems.Values.FirstOrDefault(x => x.Name == itemName + " Blueprint")?.Id;
         }
 
-        private static Dictionary<int, MarketItem> GetMarketItems()
+        private Dictionary<int, MarketItem> GetMarketItems()
         {
             var result = new Dictionary<int, MarketItem>();
             var filePath = @"Resources\types.txt";

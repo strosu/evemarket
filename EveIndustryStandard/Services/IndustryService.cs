@@ -1,4 +1,5 @@
-﻿using EveIndustryStandard.Managers;
+﻿using System;
+using EveIndustryStandard.Managers;
 using EveIndustryStandard.Models;
 using EveIndustryStandard.Strategies;
 using IO.Swagger.Api;
@@ -13,18 +14,18 @@ namespace EveIndustryStandard.Services
         private readonly Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
         private readonly ItemFactory _itemFactory;
         
-        private IndustryService(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, ItemManager itemManager)
+        private IndustryService(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, Func<int, string> getItemNameFunc, MaterialsService materialsService)
         {
-            _itemFactory = new ItemFactory(citadelOrdersManager, blueprintService, itemManager);
+            _itemFactory = new ItemFactory(citadelOrdersManager, blueprintService, getItemNameFunc, materialsService);
         }
 
         public static async Task<IndustryService> CreateAsync(bool refreshCitadelData)
         {
             await ClientManager.Build();
             var marketApi = new MarketApi();
-            var citadelManager = await CitadelOrdersManager.BuildCitadelManagerAsync(marketApi, refreshCitadelData);
+            var citadelManager = await CitadelOrdersManager.BuildAsync(marketApi, refreshCitadelData);
             var itemManager = new ItemManager();
-            return new IndustryService(citadelManager, new BlueprintService(new BlueprintManager(), itemManager), itemManager);
+            return new IndustryService(citadelManager, new BlueprintService(new BlueprintManager(), itemManager), itemManager.GetItemName, new MaterialsService());
         }
 
         /// <summary>
@@ -32,10 +33,8 @@ namespace EveIndustryStandard.Services
         /// </summary>
         /// <param name="itemId"></param>
         /// <param name="amount"></param>
-        /// <param name="buyRegion"></param>
-        /// <param name="buySystemId"></param>
         /// <returns></returns>
-        public async Task<Item> ComputePriceAsync(int itemId, int amount, int buyRegion, int buySystemId)
+        public async Task<Item> ComputePriceAsync(int itemId, int amount)
         {
             if (_itemCache.ContainsKey(itemId))
             {

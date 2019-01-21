@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using EveIndustryStandard.Managers;
 using EveIndustryStandard.Models;
 using EveIndustryStandard.Services;
@@ -9,13 +10,15 @@ namespace EveIndustryStandard.Strategies
     {
         private readonly CitadelOrdersManager _citadelOrdersManager;
         private readonly BlueprintService _blueprintService;
-        private readonly ItemManager _itemManager;
+        private readonly Func<int, string> _getItemNameFunc;
+        private readonly MaterialsService _materialsService;
 
-        public ItemFactory(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, ItemManager itemManager)
+        public ItemFactory(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, Func<int, string> getItemNameFunc, MaterialsService materialsService)
         {
             _citadelOrdersManager = citadelOrdersManager;
             _blueprintService = blueprintService;
-            _itemManager = itemManager;
+            _getItemNameFunc = getItemNameFunc;
+            _materialsService = materialsService;
         }
 
         public async Task<Item> BuildAsync(int itemId, int amount)
@@ -24,9 +27,9 @@ namespace EveIndustryStandard.Strategies
                 {
                     Id = itemId,
                     Amount = amount,
-                    ItemName = _itemManager.GetItemName(itemId)
+                    ItemName = _getItemNameFunc(itemId)
                 }
-                .WithOneDqBuildStrategy(this, _blueprintService)
+                .WithOneDqBuildStrategy(BuildAsync, _blueprintService, _materialsService)
                 .WithOneDqBuyStrategy(_citadelOrdersManager.DestinationSellPrices)
                 .BuildAsync();
         }

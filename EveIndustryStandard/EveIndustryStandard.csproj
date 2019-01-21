@@ -59,7 +59,7 @@
     <Compile Include="Services\IndustryService.cs" />
     <Compile Include="Managers\ItemManager.cs" />
     <Compile Include="Helpers\LazyAsync.cs" />
-    <Compile Include="Managers\MaterialsManager.cs" />
+    <Compile Include="Managers\MaterialsService.cs" />
     <Compile Include="Managers\SellableManager.cs" />
     <Compile Include="Models\BlueprintCopy.cs" />
     <Compile Include="Models\CharInfo.cs" />
@@ -74,7 +74,7 @@
     <Compile Include="Strategies\Obtaining\BuyLocalStrategy.cs" />
     <Compile Include="Strategies\Obtaining\NullObtainingStrategy.cs" />
     <Compile Include="Strategies\Strategy.cs" />
-    <Compile Include="Strategies\Offloading\ToLocalSellOffloadingStrategy.cs" />
+    <Compile Include="Strategies\Offloading\LocalSellOrdersOffloadingStrategy.cs" />
     <Compile Include="Strategies\Offloading\NullOffloadingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>

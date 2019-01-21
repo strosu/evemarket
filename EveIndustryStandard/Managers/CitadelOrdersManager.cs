@@ -24,7 +24,7 @@ namespace EveIndustryStandard.Managers
             _marketApi = marketApi;
         }
 
-        public static async Task<CitadelOrdersManager> BuildCitadelManagerAsync(MarketApi marketApi, bool refreshCitadelData)
+        public static async Task<CitadelOrdersManager> BuildAsync(MarketApi marketApi, bool refreshCitadelData)
         {
             var result = new CitadelOrdersManager(marketApi);
             return await result.InitializeCitadelOrdersAsync(refreshCitadelData);

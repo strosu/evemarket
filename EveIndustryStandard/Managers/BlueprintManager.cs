@@ -21,7 +21,7 @@ namespace EveIndustryStandard.Managers
             return _bpcs.GetValueOrNull(bpcItemId);
         }
 
-        private static Dictionary<int, BlueprintCopy> GetBlueprints()
+        private Dictionary<int, BlueprintCopy> GetBlueprints()
         {
             var result = new Dictionary<int, BlueprintCopy>();
 

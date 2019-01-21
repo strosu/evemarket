@@ -7,11 +7,16 @@ using System.Linq;
 
 namespace EveIndustryStandard.Managers
 {
-    public class MaterialsManager
+    public class MaterialsService
     {
-        private static readonly Dictionary<int?, double?> AdjustedPrices = GetAdjustedPrices();
+        private readonly Dictionary<int?, double?> _adjustedPrices;
 
-        public static double GetInstallCost(List<Component> components)
+        public MaterialsService()
+        {
+            _adjustedPrices = GetAdjustedPrices();
+        }
+
+        public double GetInstallCost(IEnumerable<Component> components)
         {
             var baseJobCost = components.Sum(x => GetAdjustedPrice(x.Id) * x.Amount);
 
@@ -24,19 +29,19 @@ namespace EveIndustryStandard.Managers
             return jobFee + facilityTax;
         }
 
-        private static Dictionary<int?, double?> GetAdjustedPrices()
+        private Dictionary<int?, double?> GetAdjustedPrices()
         {
             return ApiExtension.GetAll(index => new MarketApi().GetMarketsPricesAsyncWithHttpInfo()).Result.ToDictionary(x => x.TypeId, x => x.AdjustedPrice);
         }
 
-        private static double GetAdjustedPrice(int itemId)
+        private double GetAdjustedPrice(int itemId)
         {
-            if (!AdjustedPrices.ContainsKey(itemId))
+            if (!_adjustedPrices.ContainsKey(itemId))
             {
                 throw new ArgumentException("invalid itemId");
             }
 
-            return AdjustedPrices[itemId].Value;
+            return _adjustedPrices[itemId].Value;
         }
     }
 }

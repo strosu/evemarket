@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace EveIndustryStandard.Strategies.Offloading
 {
-    public class ToLocalSellOffloadingStrategy : Strategy
+    public class LocalSellOrdersOffloadingStrategy : Strategy
     {
         private readonly Dictionary<int, double> _destinationBuyPrices;
 
-        private ToLocalSellOffloadingStrategy(Item item, Dictionary<int, double> destinationBuyPrices) : base(item)
+        private LocalSellOrdersOffloadingStrategy(Item item, Dictionary<int, double> destinationBuyPrices) : base(item)
         {
             _destinationBuyPrices = destinationBuyPrices;
         }
@@ -22,7 +22,7 @@ namespace EveIndustryStandard.Strategies.Offloading
                 return new NullOffloadingStrategy(_item);
             }
 
-            return new ToLocalSellOffloadingStrategy(_item, destinationBuyPrices);
+            return new LocalSellOrdersOffloadingStrategy(_item, destinationBuyPrices);
         }
 
         protected override Task<double> ComputePrice()

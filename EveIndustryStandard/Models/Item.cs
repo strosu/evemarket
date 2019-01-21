@@ -1,9 +1,11 @@
-﻿using EveIndustryStandard.Services;
+﻿using System;
+using EveIndustryStandard.Services;
 using EveIndustryStandard.Strategies;
 using EveIndustryStandard.Strategies.Obtaining;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EveIndustryStandard.Managers;
 
 namespace EveIndustryStandard.Models
 {
@@ -35,9 +37,9 @@ namespace EveIndustryStandard.Models
             return this;
         }
 
-        public Item WithOneDqBuildStrategy(ItemFactory itemFactory, BlueprintService blueprintService)
+        public Item WithOneDqBuildStrategy(Func<int, int, Task<Item>> buildFunc, BlueprintService blueprintService, MaterialsService materialsService)
         {
-            _obtainingStrategies.Add(BuildLocalOneItemStrategy.Build(this, itemFactory, blueprintService));
+            _obtainingStrategies.Add(BuildLocalOneItemStrategy.Build(this, buildFunc, blueprintService, materialsService));
             return this;
         }
 
