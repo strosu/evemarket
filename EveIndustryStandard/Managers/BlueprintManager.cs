@@ -26,7 +26,7 @@ namespace EveIndustryStandard.Managers
             var result = new Dictionary<int, BlueprintCopy>();
 
             var maxRunsDictionary = new Dictionary<int, int>();
-            var materialsDictionary = new Dictionary<int, List<Tuple<int, int>>>();
+            var materialsDictionary = new Dictionary<int, List<Component>>();
 
             using (var parser = new TextFieldParser(@"Resources\industryBlueprints.csv"))
             {
@@ -61,10 +61,14 @@ namespace EveIndustryStandard.Managers
 
                     if (!materialsDictionary.ContainsKey(id))
                     {
-                        materialsDictionary.Add(id, new List<Tuple<int, int>>());
+                        materialsDictionary.Add(id, new List<Component>());
                     }
 
-                    materialsDictionary[id].Add(new Tuple<int, int>(materialType, materialAmount));
+                    materialsDictionary[id].Add(new Component
+                    {
+                        Id = materialType,
+                        Amount = materialAmount
+                    });
                 }
             }
 
@@ -72,14 +76,10 @@ namespace EveIndustryStandard.Managers
 
             foreach (var key in keyList)
             {
-                result.Add(key, new BlueprintCopy()
+                result.Add(key, new BlueprintCopy
                 {
                     MaxRuns = maxRunsDictionary[key],
-                    UnresearchedRequiredComponentsForSingleRun = materialsDictionary[key].Select(x => new Component()
-                    {
-                        Id = x.Item1,
-                        Amount = x.Item2
-                    }).ToList()
+                    UnresearchedRequiredComponentsForSingleRun = materialsDictionary[key]
                 });
             }
 

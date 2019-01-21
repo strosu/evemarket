@@ -65,8 +65,6 @@
     <Compile Include="Models\CharInfo.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\MarketItem.cs" />
-    <Compile Include="Models\ItemPrice.cs" />
-    <Compile Include="Models\ItemPriceWithAmount.cs" />
     <Compile Include="Models\UserToken.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
