@@ -41,16 +41,16 @@ namespace EveIndustryStandard.Models
             return this;
         }
 
-        public Item Build()
+        public async Task<Item> BuildAsync()
         {
             var results = new List<Task>();
 
             foreach (var strategy in _obtainingStrategies)
             {
-                results.Add(strategy.ComputeFinalPrice());
+                results.Add(strategy.ComputeFinalPriceAsync());
             }
 
-            Task.WaitAll(results.ToArray());
+            await Task.WhenAll(results.ToArray());
 
             return this;
         }

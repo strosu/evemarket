@@ -19,18 +19,18 @@ namespace EveIndustryStandard.Managers
             _marketApi = marketApi;
         }
 
-        public async Task GetPotentialItems(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
+        public async Task GetPotentialItemsAsync(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
         {
-            var sellable = await GetSellableItems(regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay);
+            var sellable = await GetSellableItemsAsync(regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay);
         }
 
-        private async Task<ConcurrentBag<MarketItem>> GetSellableItems(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
+        private async Task<ConcurrentBag<MarketItem>> GetSellableItemsAsync(int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
         {
             var result = new ConcurrentBag<MarketItem>();
 
             var tasks = _marketItems.Select(async item =>
             {
-                if (await HasMarket(item.Value, regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay))
+                if (await HasMarketAsync(item.Value, regionId, daysToEvaluate, minAverageVolumePerDay, minOrdersPerDay))
                 {
                     result.Add(item.Value);
                 };
@@ -40,7 +40,7 @@ namespace EveIndustryStandard.Managers
             return result;
         }
 
-        private async Task<bool> HasMarket(MarketItem marketItem, int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
+        private async Task<bool> HasMarketAsync(MarketItem marketItem, int regionId, int daysToEvaluate, int minAverageVolumePerDay, int minOrdersPerDay)
         {
             try
             {

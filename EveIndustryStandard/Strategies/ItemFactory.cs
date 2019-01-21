@@ -1,4 +1,5 @@
-﻿using EveIndustryStandard.Managers;
+﻿using System.Threading.Tasks;
+using EveIndustryStandard.Managers;
 using EveIndustryStandard.Models;
 using EveIndustryStandard.Services;
 
@@ -17,9 +18,9 @@ namespace EveIndustryStandard.Strategies
             _itemManager = itemManager;
         }
 
-        public Item Build(int itemId, int amount)
+        public async Task<Item> BuildAsync(int itemId, int amount)
         {
-            return new Item()
+            return await new Item
                 {
                     Id = itemId,
                     Amount = amount,
@@ -27,7 +28,7 @@ namespace EveIndustryStandard.Strategies
                 }
                 .WithOneDqBuildStrategy(this, _blueprintService)
                 .WithOneDqBuyStrategy(_citadelOrdersManager.DestinationSellPrices)
-                .Build();
+                .BuildAsync();
         }
     }
 }

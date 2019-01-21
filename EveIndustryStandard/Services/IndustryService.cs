@@ -18,11 +18,11 @@ namespace EveIndustryStandard.Services
             _itemFactory = new ItemFactory(citadelOrdersManager, blueprintService, itemManager);
         }
 
-        public static async Task<IndustryService> Create(bool refreshCitadelData)
+        public static async Task<IndustryService> CreateAsync(bool refreshCitadelData)
         {
             await ClientManager.Build();
             var marketApi = new MarketApi();
-            var citadelManager = await CitadelOrdersManager.BuildCitadelManager(marketApi, refreshCitadelData);
+            var citadelManager = await CitadelOrdersManager.BuildCitadelManagerAsync(marketApi, refreshCitadelData);
             var itemManager = new ItemManager();
             return new IndustryService(citadelManager, new BlueprintService(new BlueprintManager(), itemManager), itemManager);
         }
@@ -35,14 +35,14 @@ namespace EveIndustryStandard.Services
         /// <param name="buyRegion"></param>
         /// <param name="buySystemId"></param>
         /// <returns></returns>
-        public Item ComputePrice2(int itemId, int amount, int buyRegion, int buySystemId)
+        public async Task<Item> ComputePriceAsync(int itemId, int amount, int buyRegion, int buySystemId)
         {
             if (_itemCache.ContainsKey(itemId))
             {
                 return _itemCache[itemId];
             }
 
-            var currentItem = _itemFactory.Build(itemId, amount);
+            var currentItem = await _itemFactory.BuildAsync(itemId, amount);
 
             _itemCache.Add(itemId, currentItem);
 

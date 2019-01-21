@@ -16,6 +16,7 @@ namespace EveIndustryStandard.Managers
         private readonly MarketApi _marketApi;
         public Dictionary<int, double> DestinationSellPrices { get; private set; } = new Dictionary<int, double>();
         public Dictionary<int, double> DestinationBuyPrices { get; private set; } = new Dictionary<int, double>();
+
         private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
 
         private CitadelOrdersManager(MarketApi marketApi)
@@ -23,25 +24,25 @@ namespace EveIndustryStandard.Managers
             _marketApi = marketApi;
         }
 
-        public static async Task<CitadelOrdersManager> BuildCitadelManager(MarketApi marketApi, bool refreshCitadelData)
+        public static async Task<CitadelOrdersManager> BuildCitadelManagerAsync(MarketApi marketApi, bool refreshCitadelData)
         {
             var result = new CitadelOrdersManager(marketApi);
-            await result.InitializeCitadelOrders(refreshCitadelData);
-
-            return result;
+            return await result.InitializeCitadelOrdersAsync(refreshCitadelData);
         }
 
-        private async Task InitializeCitadelOrders(bool refreshCitadelData)
+        private async Task<CitadelOrdersManager> InitializeCitadelOrdersAsync(bool refreshCitadelData)
         {
-            await GetOrders(refreshCitadelData);
+            await GetOrdersAsync(refreshCitadelData);
 
             DestinationSellPrices =
-                (await GetCitadelSellOrders()).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
+                (await GetCitadelSellOrdersAsync()).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
 
-            DestinationBuyPrices = (await GetCitadelBuyOrders()).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
+            DestinationBuyPrices = (await GetCitadelBuyOrdersAsync()).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
+
+            return this;
         }
 
-        private async Task GetOrders(bool refreshCitadelData)
+        private async Task GetOrdersAsync(bool refreshCitadelData)
         {
             // var structureId = new SearchApi().GetCharactersCharacterIdSearchWithHttpInfo(new List<string>() { "structure" }, _charInfo.CharacterID, "1DQ");
             var filePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\Resources\\onedq.json"));
@@ -65,12 +66,12 @@ namespace EveIndustryStandard.Managers
             }
         }
 
-        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrders()
+        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrdersAsync()
         {
             return (await _destinationOrders.Value).Where(x => x.IsBuyOrder.Value);
         }
 
-        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrders()
+        private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrdersAsync()
         {
             return (await _destinationOrders.Value).Where(x => !x.IsBuyOrder.Value);
         }

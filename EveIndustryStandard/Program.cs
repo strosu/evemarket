@@ -7,12 +7,12 @@ namespace EveIndustry
 {
     class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
-            MainAsync(args).GetAwaiter().GetResult();
+            MainAsync().GetAwaiter().GetResult();
         }
 
-        static async Task MainAsync(string[] args)
+        static async Task MainAsync()
         {
             Console.WriteLine("Hello World!");
 
@@ -24,9 +24,9 @@ namespace EveIndustry
             var refreshCitadelData = bool.Parse(ConfigurationManager.AppSettings["RefreshCitadelData"]);
 
             int amount = 50;
-            var manager = await IndustryService.Create(refreshCitadelData);
+            var manager = await IndustryService.CreateAsync(refreshCitadelData);
             // var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
-            var result2 = manager.ComputePrice2(23055, amount, sourceRegionId, 30000142);
+            var result2 = await manager.ComputePriceAsync(23055, amount, sourceRegionId, 30000142);
             //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
             //var resultNyx = await manager.ComputePrice(23913, sourceRegionId, 30000142); 
             // var currentPrices = await manager.ComputeCurrentPrices(sourceRegionId, regionId);

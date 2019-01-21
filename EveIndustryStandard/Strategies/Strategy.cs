@@ -18,7 +18,7 @@ namespace EveIndustryStandard.Strategies
 
         public abstract void PrintObtainingMethod();
 
-        public async Task ComputeFinalPrice()
+        public async Task ComputeFinalPriceAsync()
         {
             GetPrice = await ComputePrice();
         }

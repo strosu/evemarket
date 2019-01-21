@@ -32,20 +32,22 @@ namespace EveIndustryStandard.Strategies.Obtaining
             return new BuildLocalOneItemStrategy(item, itemFactory, blueprintService.GetComponentsWithMultipleRuns(item.Id, item.Amount, 0.9));
         }
 
-        protected override Task<double> ComputePrice()
+        protected override async Task<double> ComputePrice()
         {
             InstallCost = GetInstallCost();
 
             _item.Components = new List<Item>();
+            var componentTasks = new List<Task<Item>>();
             foreach (var comp in _components)
             {
-                _item.Components.Add(_itemFactory.Build(comp.Id, comp.Amount));
+                componentTasks.Add(_itemFactory.BuildAsync(comp.Id, comp.Amount));
             }
+
+            _item.Components = (await Task.WhenAll(componentTasks.ToArray())).ToList();
 
             ComponentsCost = _item.Components.Sum(x => x.BestBuyingPrice);
 
-
-            return Task.FromResult(InstallCost + ComponentsCost);
+            return InstallCost + ComponentsCost;
         }
 
         private double GetInstallCost()
@@ -55,7 +57,9 @@ namespace EveIndustryStandard.Strategies.Obtaining
 
         public override void PrintObtainingMethod()
         {
-            Console.WriteLine($"Building {_item.Amount} locally for item {_item.ItemName} - {_item.Id}");
+            Console.WriteLine($"Building {_item.Amount} locally for item {_item.ItemName} - {_item.Id}. " +
+                              $"Components cost: {ComponentsCost}, install cost {InstallCost}");
+
             foreach (var comp in _item.Components)
             {
                 comp.BestObtainingStrategy.PrintObtainingMethod();
