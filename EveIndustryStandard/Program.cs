@@ -23,10 +23,10 @@ namespace EveIndustry
             var minOrdersPerDay = int.Parse(ConfigurationManager.AppSettings["MinOrdersPerDay"]);
             var refreshCitadelData = bool.Parse(ConfigurationManager.AppSettings["RefreshCitadelData"]);
 
-            int amount = 50;
-            var manager = await IndustryService.CreateAsync(refreshCitadelData);
+            int amount = 1;
+            var industryService = await ItemFactoryBuilder.CreateAsync(refreshCitadelData);
             // var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
-            var result2 = await manager.ComputePriceAsync(23055, amount);
+            var result2 = await industryService.ComputePriceAsync("Templar I", amount);
             //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
             //var resultNyx = await manager.ComputePrice(23913, sourceRegionId, 30000142); 
             // var currentPrices = await manager.ComputeCurrentPrices(sourceRegionId, regionId);

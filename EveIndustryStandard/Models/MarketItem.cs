@@ -9,5 +9,7 @@
         public int MarketGroup { get; set; }
 
         public int Group { get; set; }
+
+        public float Volume { get; set; }
     }
 }

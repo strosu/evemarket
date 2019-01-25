@@ -17,8 +17,8 @@ namespace EveIndustryStandard.Models
 
         public string ItemName { get; set; }
 
-        public double BestBuyingPrice => BestObtainingStrategy.GetPrice;
-        public double BestSellingPrice => BestOffloadingStrategy.GetPrice;
+        public double BestObtainingPrice => BestObtainingStrategy.GetPrice;
+        public double BestOffloadingPrice => BestOffloadingStrategy.GetPrice;
 
         public Strategy BestObtainingStrategy =>
             _obtainingStrategies.Aggregate((i1, i2) => i1.GetPrice < i2.GetPrice ? i1 : i2);

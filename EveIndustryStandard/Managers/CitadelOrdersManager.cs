@@ -17,7 +17,7 @@ namespace EveIndustryStandard.Managers
         public Dictionary<int, double> DestinationSellPrices { get; private set; } = new Dictionary<int, double>();
         public Dictionary<int, double> DestinationBuyPrices { get; private set; } = new Dictionary<int, double>();
 
-        private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _destinationOrders;
+        private LazyAsync<List<GetMarketsStructuresStructureId200Ok>> _allCitadelOrders;
 
         private CitadelOrdersManager(MarketApi marketApi)
         {
@@ -37,7 +37,8 @@ namespace EveIndustryStandard.Managers
             DestinationSellPrices =
                 (await GetCitadelSellOrdersAsync()).ApplyOrdersMapping(list => list.Min(x => x.Price.Value));
 
-            DestinationBuyPrices = (await GetCitadelBuyOrdersAsync()).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
+            DestinationBuyPrices = 
+                (await GetCitadelBuyOrdersAsync()).ApplyOrdersMapping(list => list.Max(x => x.Price.Value));
 
             return this;
         }
@@ -49,31 +50,32 @@ namespace EveIndustryStandard.Managers
 
             if (refreshCitadelData)
             {
-                _destinationOrders =
+                _allCitadelOrders =
                     new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () => await ApiExtension.GetAll(
                         index => _marketApi.GetMarketsStructuresStructureIdAsyncWithHttpInfo(1022734985679, page: index)));
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(await _destinationOrders.Value));
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(await _allCitadelOrders.Value));
+                return;
             }
 
             using (var file = File.OpenText(filePath))
             {
                 var serializer = new JsonSerializer();
 
-                _destinationOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
+                _allCitadelOrders = new LazyAsync<List<GetMarketsStructuresStructureId200Ok>>(async () =>
                     (List<GetMarketsStructuresStructureId200Ok>) serializer.Deserialize(file,
                         typeof(List<GetMarketsStructuresStructureId200Ok>)));
-                await _destinationOrders.Value;
+                await _allCitadelOrders.Value;
             }
         }
 
         private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelBuyOrdersAsync()
         {
-            return (await _destinationOrders.Value).Where(x => x.IsBuyOrder.Value);
+            return (await _allCitadelOrders.Value).Where(x => x.IsBuyOrder.Value);
         }
 
         private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrdersAsync()
         {
-            return (await _destinationOrders.Value).Where(x => !x.IsBuyOrder.Value);
+            return (await _allCitadelOrders.Value).Where(x => !x.IsBuyOrder.Value);
         }
     }
 }

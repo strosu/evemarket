@@ -47,7 +47,7 @@ namespace EveIndustryStandard.Strategies.Obtaining
 
             _item.Components = (await Task.WhenAll(componentTasks.ToArray())).ToList();
 
-            ComponentsCost = _item.Components.Sum(x => x.BestBuyingPrice);
+            ComponentsCost = _item.Components.Sum(x => x.BestObtainingPrice);
 
             return InstallCost + ComponentsCost;
         }

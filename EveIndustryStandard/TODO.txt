@@ -1,0 +1,9 @@
+﻿Features:
+- Add manager for station orders
+- Add option for delivering
+- Add building based on the name
+- Compute selling to buy/sell orders
+
+Bugs:
+- Compute buying price based on orders, not on min price
+- replace dictionary of orders with func returning price for x items

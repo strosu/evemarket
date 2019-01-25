@@ -9,23 +9,23 @@ namespace EveIndustryStandard.Services
     public class BlueprintService
     {
         private readonly BlueprintManager _blueprintManager;
-        private readonly ItemManager _itemManager;
+        private readonly GeneralItemManager _generalItemManager;
 
-        public BlueprintService(BlueprintManager blueprintManager, ItemManager itemManager)
+        public BlueprintService(BlueprintManager blueprintManager, GeneralItemManager generalItemManager)
         {
             _blueprintManager = blueprintManager;
-            _itemManager = itemManager;
+            _generalItemManager = generalItemManager;
         }
 
         public bool ItemHasBlueprint(int itemId)
         {
-            return _itemManager.GetBpcIdForItem(itemId) != null;
+            return _generalItemManager.GetBpcIdForItem(itemId) != null;
         }
 
         public List<Component> GetComponentsWithMultipleRuns(int itemId, int amount, double bpcMaterialModifier)
         {
             var requiredComponents = new List<Component>();
-            var bpcId = _itemManager.GetBpcIdForItem(itemId);
+            var bpcId = _generalItemManager.GetBpcIdForItem(itemId);
             var bpc = _blueprintManager.GetBluePrint(bpcId);
 
             if (bpc == null)
