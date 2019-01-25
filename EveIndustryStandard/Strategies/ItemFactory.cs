@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EveIndustryStandard.Managers;
+using EveIndustryStandard.Managers.Market;
 using EveIndustryStandard.Models;
 using EveIndustryStandard.Services;
 
@@ -13,15 +14,15 @@ namespace EveIndustryStandard.Strategies
     public class ItemFactory
     {
         private readonly Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
-        private readonly CitadelOrdersManager _citadelOrdersManager;
+        private readonly CitadelObtainer _citadelObtainer;
         private readonly BlueprintService _blueprintService;
         private readonly Func<int, string> _getItemNameFunc;
         private readonly Func<string, int> _getItemIdFunc;
         private readonly MaterialsService _materialsService;
 
-        public ItemFactory(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, Func<int, string> getItemNameFunc, Func<string, int> getItemIdFunc, MaterialsService materialsService)
+        public ItemFactory(CitadelObtainer citadelObtainer, BlueprintService blueprintService, Func<int, string> getItemNameFunc, Func<string, int> getItemIdFunc, MaterialsService materialsService)
         {
-            _citadelOrdersManager = citadelOrdersManager;
+            _citadelObtainer = citadelObtainer;
             _blueprintService = blueprintService;
             _getItemNameFunc = getItemNameFunc;
             _getItemIdFunc = getItemIdFunc;
@@ -56,7 +57,7 @@ namespace EveIndustryStandard.Strategies
                     ItemName = _getItemNameFunc(itemId)
                 }
                 .WithOneDqBuildStrategy(BuildAsync, _blueprintService, _materialsService)
-                .WithOneDqBuyStrategy(_citadelOrdersManager.DestinationSellPrices)
+                .WithOneDqBuyStrategy(_citadelObtainer)
                 .BuildAsync();
         }
     }

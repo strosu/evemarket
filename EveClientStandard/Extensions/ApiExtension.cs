@@ -39,8 +39,35 @@ namespace EveClientStandard.Extensions
 
         public static Dictionary<int, double> ApplyOrdersMapping(this IEnumerable<GetMarketsStructuresStructureId200Ok> filteredOrders, Func<IEnumerable<GetMarketsStructuresStructureId200Ok>, double> func)
         {
-            return filteredOrders.GroupBy(x => x.TypeId.Value,
-                (key, g) => new { TypeId = key, Prices = g.ToList() }).ToDictionary(x => x.TypeId, x => func(x.Prices));
+            return filteredOrders
+                .GroupBy(
+                    x => x.TypeId.Value,
+                    (key, g) => new { TypeId = key, Prices = g.ToList() })
+                .ToDictionary(x => x.TypeId, x => func(x.Prices));
         }
+
+        public static Dictionary<int, List<Order>> GetOrdersAndApplyMapping2(this IEnumerable<GetMarketsStructuresStructureId200Ok> filteredOrders, Func<IEnumerable<Order>, List<Order>> func)
+        {
+            return filteredOrders.GroupBy(x => x.TypeId.Value,
+                    (key, g) => 
+                        new {
+                            TypeId = key,
+                            Prices = g
+                                .ToList()
+                                .Select(x => new Order()
+                                {
+                                    Amount = x.VolumeRemain.Value,
+                                    Price = x.Price.Value
+                                })
+                                .ToList()
+                        })
+                .ToDictionary(x => x.TypeId, x => func(x.Prices));
+        }
+    }
+
+    public class Order
+    {
+        public int Amount { get; set; }
+        public double Price { get; set; }
     }
 }

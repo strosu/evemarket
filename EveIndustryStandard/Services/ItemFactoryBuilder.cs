@@ -1,11 +1,11 @@
-﻿using System;
+﻿using EveIndustryStandard.Client;
 using EveIndustryStandard.Managers;
+using EveIndustryStandard.Managers.Market;
 using EveIndustryStandard.Models;
 using EveIndustryStandard.Strategies;
 using IO.Swagger.Api;
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
-using EveIndustryStandard.Client;
 
 namespace EveIndustryStandard.Services
 {
@@ -13,16 +13,16 @@ namespace EveIndustryStandard.Services
     {
         private readonly ItemFactory _itemFactory;
         
-        private ItemFactoryBuilder(CitadelOrdersManager citadelOrdersManager, BlueprintService blueprintService, Func<int, string> getItemNameFunc, Func<string, int> getItemIdFunc, MaterialsService materialsService)
+        private ItemFactoryBuilder(CitadelObtainer citadelObtainer, BlueprintService blueprintService, Func<int, string> getItemNameFunc, Func<string, int> getItemIdFunc, MaterialsService materialsService)
         {
-            _itemFactory = new ItemFactory(citadelOrdersManager, blueprintService, getItemNameFunc, getItemIdFunc, materialsService);
+            _itemFactory = new ItemFactory(citadelObtainer, blueprintService, getItemNameFunc, getItemIdFunc, materialsService);
         }
 
         public static async Task<ItemFactoryBuilder> CreateAsync(bool refreshCitadelData)
         {
             await ClientManager.Build();
             var marketApi = new MarketApi();
-            var citadelManager = await CitadelOrdersManager.BuildAsync(marketApi, refreshCitadelData);
+            var citadelManager = await CitadelObtainer.BuildAsync(marketApi, refreshCitadelData);
             var itemManager = new GeneralItemManager();
             return new ItemFactoryBuilder(citadelManager, new BlueprintService(new BlueprintManager(), itemManager), itemManager.GetItemName, itemManager.GetItemId, new MaterialsService());
         }

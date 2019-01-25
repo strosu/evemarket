@@ -25,8 +25,9 @@ namespace EveIndustry
 
             int amount = 1;
             var industryService = await ItemFactoryBuilder.CreateAsync(refreshCitadelData);
-            // var result = await manager.ComputePrice(23055, sourceRegionId, 30000142);
-            var result2 = await industryService.ComputePriceAsync("Templar I", amount);
+            // var result = await manager.ComputePrice(23055, sourceRegionId, 30000142); 
+            // var result2 = await industryService.ComputePriceAsync("Templar I", amount); 
+            var result2 = await industryService.ComputePriceAsync("Tritanium", 6000000);
             //var resultMalleus = await manager.ComputePrice(32340, sourceRegionId, 30000142);
             //var resultNyx = await manager.ComputePrice(23913, sourceRegionId, 30000142); 
             // var currentPrices = await manager.ComputeCurrentPrices(sourceRegionId, regionId);

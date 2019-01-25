@@ -1,33 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EveIndustryStandard.Helpers;
+﻿using EveIndustryStandard.Helpers;
+using EveIndustryStandard.Managers.Market;
 using EveIndustryStandard.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace EveIndustryStandard.Strategies.Obtaining
 {
     public class BuyLocalStrategy : Strategy
     {
-        private readonly Dictionary<int, double> _localSellOrders;
+        private readonly IMarketObtainer _obtainer;
 
-        private BuyLocalStrategy(Item item, Dictionary<int, double> localSellOrders) : base(item)
+        private BuyLocalStrategy(Item item, IMarketObtainer obtainer) : base(item)
         {
-            _localSellOrders = localSellOrders;
+            _obtainer = obtainer;
         }
 
-        public static Strategy Build(Item item, Dictionary<int, double> localSellOrders)
+        public static Strategy Build(Item item, IMarketObtainer obtainer)
         {
-            if (DictionaryHelpers.GetSellPriceForItemOrMax(item.Id, localSellOrders).IsMaxValue())
+            if (!obtainer.CanBuyHere(item.Id, item.Amount))
             {
                 return new NullObtainingStrategy(item);
             }
 
-            return new BuyLocalStrategy(item, localSellOrders);
+            return new BuyLocalStrategy(item, obtainer);
         }
 
         protected override Task<double> ComputePrice()
         {
-            return Task.FromResult(DictionaryHelpers.GetSellPriceForItemOrMax(_item.Id, _localSellOrders) * _item.Amount);
+            return Task.FromResult(_obtainer.GetBuyingPrice(_item.Id, _item.Amount));
         }
 
         public override void PrintObtainingMethod()

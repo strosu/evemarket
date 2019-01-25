@@ -55,7 +55,8 @@
     <Compile Include="Client\ClientManager.cs" />
     <Compile Include="Helpers\DictionaryHelpers.cs" />
     <Compile Include="Managers\BlueprintManager.cs" />
-    <Compile Include="Managers\CitadelOrdersManager.cs" />
+    <Compile Include="Managers\Market\CitadelObtainer.cs" />
+    <Compile Include="Managers\Market\IMarketObtainer.cs" />
     <Compile Include="Services\ItemFactoryBuilder.cs" />
     <Compile Include="Managers\GeneralItemManager.cs" />
     <Compile Include="Helpers\LazyAsync.cs" />

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EveIndustryStandard.Managers;
+using EveIndustryStandard.Managers.Market;
 
 namespace EveIndustryStandard.Models
 {
@@ -31,9 +32,9 @@ namespace EveIndustryStandard.Models
         private readonly List<Strategy> _obtainingStrategies  = new List<Strategy>();
         private readonly List<Strategy> _offLoadingStrategies  = new List<Strategy>();
 
-        public Item WithOneDqBuyStrategy(Dictionary<int, double> localPrices)
+        public Item WithOneDqBuyStrategy(IMarketObtainer obtainer)
         {
-            _obtainingStrategies.Add(BuyLocalStrategy.Build(this, localPrices));
+            _obtainingStrategies.Add(BuyLocalStrategy.Build(this, obtainer));
             return this;
         }
 
