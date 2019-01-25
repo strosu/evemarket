@@ -1,5 +1,4 @@
-﻿using EveIndustryStandard.Helpers;
-using EveIndustryStandard.Managers.Market;
+﻿using EveIndustryStandard.Managers.Market;
 using EveIndustryStandard.Models;
 using System;
 using System.Threading.Tasks;

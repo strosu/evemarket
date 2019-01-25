@@ -30,6 +30,49 @@ namespace EveIndustryStandard.Managers.Market
             return await result.InitializeCitadelOrdersAsync(refreshCitadelData);
         }
 
+        public double GetBuyingPriceViaBuyOrder(int itemId, int amount)
+        {
+            if (!_localBuyPrices.TryGetValue(itemId, out var orders))
+            {
+                return double.MaxValue;
+            }
+
+            // We can buy a presumably "infinite" amount, the only constraint is to have a higher price than the most expensive buy order
+            return orders.OrderBy(x => x.Price).FirstOrDefault().Price + 0.01;
+        }
+
+        public bool CanBuyHere(int itemId, int amount)
+        {
+            if (!_localBuyPrices.ContainsKey(itemId)) return false;
+
+            double availableAmount = _localSellPrices[itemId].Select(x => (double)x.Amount).Sum();
+            return availableAmount >= amount;
+        }
+
+        public double GetBuyingPrice(int itemId, int amount)
+        {
+            if (!CanBuyHere(itemId, amount)) return double.MaxValue;
+
+            var totalPrice = 0d;
+            var toBuy = amount;
+
+            for (var i = 0; i < _localSellPrices[itemId].Count && toBuy > 0; i++)
+            {
+                var currentOrder = _localSellPrices[itemId][i];
+                if (currentOrder.Amount > toBuy)
+                {
+                    currentOrder.Amount -= toBuy;
+                    return totalPrice + toBuy * currentOrder.Price;
+                }
+
+                toBuy -= currentOrder.Amount;
+                totalPrice += currentOrder.Amount * currentOrder.Price;
+                _localSellPrices[itemId].Remove(currentOrder);
+            }
+
+            return totalPrice;
+        }
+
         private async Task<CitadelObtainer> InitializeCitadelOrdersAsync(bool refreshCitadelData)
         {
             await GetOrdersAsync(refreshCitadelData);
@@ -74,41 +117,6 @@ namespace EveIndustryStandard.Managers.Market
         private async Task<IEnumerable<GetMarketsStructuresStructureId200Ok>> GetCitadelSellOrdersAsync()
         {
             return (await _allCitadelOrders.Value).Where(x => !x.IsBuyOrder.Value);
-        }
-
-        public double GetBuyingPriceViaBuyOrder(int itemId, int amount)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool CanBuyHere(int itemId, int amount)
-        {
-            if (!_localBuyPrices.ContainsKey(itemId)) return false;
-
-            double availableAmount = _localSellPrices[itemId].Select(x => (double)x.Amount).Sum();
-            return availableAmount >= amount;
-        }
-
-        public double GetBuyingPrice(int itemId, int amount)
-        {
-            if (!CanBuyHere(itemId, amount)) return double.MaxValue;
-
-            var totalPrice = 0d;
-            var toBuy = amount;
-
-            for (var i = 0; i < _localSellPrices[itemId].Count && toBuy > 0; i++)
-            {
-                var currentOrder = _localSellPrices[itemId][i];
-                if (currentOrder.Amount > toBuy)
-                {
-                    return totalPrice + toBuy * currentOrder.Price;
-                }
-
-                toBuy -= currentOrder.Amount;
-                totalPrice += currentOrder.Amount * currentOrder.Price;
-            }
-
-            return totalPrice;
         }
     }
 }

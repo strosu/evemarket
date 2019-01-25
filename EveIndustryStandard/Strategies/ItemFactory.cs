@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EveIndustryStandard.Managers;
+﻿using EveIndustryStandard.Managers;
 using EveIndustryStandard.Managers.Market;
 using EveIndustryStandard.Models;
 using EveIndustryStandard.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace EveIndustryStandard.Strategies
 {
@@ -13,7 +12,6 @@ namespace EveIndustryStandard.Strategies
     /// </summary>
     public class ItemFactory
     {
-        private readonly Dictionary<int, Item> _itemCache = new Dictionary<int, Item>();
         private readonly CitadelObtainer _citadelObtainer;
         private readonly BlueprintService _blueprintService;
         private readonly Func<int, string> _getItemNameFunc;
@@ -35,20 +33,6 @@ namespace EveIndustryStandard.Strategies
         }
 
         public async Task<Item> BuildAsync(int itemId, int amount)
-        {
-            if (_itemCache.ContainsKey(itemId))
-            {
-                return _itemCache[itemId];
-            }
-
-            var currentItem = await BuildWithStrategies(itemId, amount);
-
-            _itemCache.Add(itemId, currentItem);
-
-            return currentItem;
-        }
-
-        private async Task<Item> BuildWithStrategies(int itemId, int amount)
         {
             return await new Item
                 {
